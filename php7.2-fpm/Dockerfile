@@ -21,18 +21,23 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-dev \
     php-memcached \
     php-pear \
-    php-dev \
     libmcrypt-dev \
     libreadline-dev \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN pecl install mcrypt-1.0.1
-RUN echo extension=mcrypt.so >> /etc/php/7.2/fpm/php.ini
-
 RUN mkdir /var/run/php/
 COPY etc/ /etc/
+
+# Configure php
+RUN pecl install mcrypt-1.0.2
+RUN echo extension=mcrypt.so >> /etc/php/${PHP_VERSION}/fpm/php.ini
+RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/fpm/php.ini \
+&& sed -i '/;date.timezone =/c date.timezone = Europe\/Copenhagen' /etc/php/${PHP_VERSION}/fpm/php.ini \
+&& sed -i '/upload_max_filesize = 2M/c upload_max_filesize = 16M' /etc/php/${PHP_VERSION}/fpm/php.ini \
+&& sed -i '/post_max_size = 8M/c post_max_size = 20M' /etc/php/${PHP_VERSION}/fpm/php.ini
 
 # Install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
