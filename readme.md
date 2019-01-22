@@ -10,6 +10,11 @@ Drush 6 image with memcached support enabled.
 docker build --tag=itkdev/drush6 .
 ```
 
+### Alias
+```sh
+alias ddrush='docker-compose run --rm drush'
+```
+
 ## PHP 7.0 FPM
 
 ```sh
