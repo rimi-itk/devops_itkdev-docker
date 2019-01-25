@@ -26,6 +26,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php-pear \
     libmcrypt-dev \
     libreadline-dev \
+    mysql-client \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/
