@@ -37,10 +37,11 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
     php-memcached \
+    mysql-client \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/
-#COPY etc/ /etc/
+COPY etc/ /etc/
 
 # Configure php
 RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/fpm/php.ini \

@@ -23,6 +23,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
     php-memcached \
+    mysql-client \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/
