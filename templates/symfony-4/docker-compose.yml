@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb:10.3
+    ports:
+      - '3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: db
+      MYSQL_PASSWORD: db
+      MYSQL_DATABASE: db
+
+  phpfpm:
+    image: itkdev/php7.2-fpm:latest
+    # environment:
+    #   PHP_SENDMAIL_PATH: /usr/sbin/sendmail -t -i -S mailhog:1025
+    restart: always
+    depends_on:
+      - mariadb
+    volumes:
+      - .:/app:delegated
+
+  nginx:
+    image: bitnami/nginx:latest
+    depends_on:
+      - phpfpm
+      # - memcached
+    ports:
+      - '8000'
+    volumes:
+      - ./.docker/vhost.conf:/opt/bitnami/nginx/conf/vhosts/docker.conf:ro
+      - ./:/app:delegated
+
+  memcached:
+    image: 'memcached:latest'
+    ports:
+      - '11211'
+    environment:
+      - MEMCACHED_CACHE_SIZE=64
+
+  # varnish:
+  #   image: 'wodby/varnish:4'
+  #   depends_on:
+  #     - nginx
+  #   ports:
+  #     - '6081'
+  #   environment:
+  #     VARNISHD_VCL_SCRIPT: /etc/varnish/ereolen.vcl
+  #     VARNISH_SECRET: eca2b7c263eae74c0d746f147691e7ce
+  #   volumes:
+  #     - ./.docker/ereolen.vcl:/etc/varnish/ereolen.vcl:ro
+
+  # mailhog:
+  #   image: mailhog/mailhog
