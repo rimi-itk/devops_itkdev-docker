@@ -31,7 +31,7 @@ services:
       - ${PWD}/.docker/vhost.conf:/etc/nginx/conf.d/default.conf:ro
       - ./:/app:delegated
     labels:
-      - "traefik.frontend.rule=Host:symfony-4.docker.localhost"
+      - "traefik.frontend.rule=Host:symfony-3.docker.localhost"
 
   memcached:
     image: 'memcached:latest'
