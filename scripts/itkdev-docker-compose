@@ -14,16 +14,19 @@ Usage: itkdev-docker-compose command [command arguments]
 
 Commands:
 
-  url:      Print url to site
+  url:          Print url to site
 
-  open:     Open url in default browser
+  open:         Open url in default browser
 
-  drush:    Run drush command. If drush in installed via composer, the
-            vendor/bin/drush command is run inside the phpfpm
-            container. Otherwise, the drush container is used to run
-            the command.
+  drush:        Run drush command. If drush in installed via composer,
+                the vendor/bin/drush command is run inside the phpfpm
+                container. Otherwise, the drush container is used to
+                run the command.
 
-  composer: Run composer command inside phpfpm container
+  composer:     Run composer command inside phpfpm container
+
+  bin/*
+  vendor/bin/*: Run command command inside phpfpm container
 
 EOF
 }
@@ -75,7 +78,7 @@ case "$cmd" in
     docker-compose exec phpfpm composer "$@"
     ;;
 
-  vendor/bin/*)
+  bin/*|vendor/bin/*)
     docker-compose exec phpfpm /app/$cmd "$@"
     ;;
 
