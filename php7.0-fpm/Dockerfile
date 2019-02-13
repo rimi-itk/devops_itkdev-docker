@@ -22,6 +22,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
+    php-xdebug \
     php-memcached \
     mysql-client \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -40,8 +41,13 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 RUN php -r "unlink('composer-setup.php');"
 
+# Install configuration template handler
+ADD https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64 /usr/local/bin/confd
+RUN chmod +x /usr/local/bin/confd
+
 EXPOSE 9000
 
 WORKDIR /app
 
-CMD [ "php-fpm7.0", "-F", "--pid", "/var/run/php/php-fpm7.0.pid", "-y", "/etc/php/7.0/fpm/php-fpm.conf" ]
+COPY docker-entrypoint.sh /usr/local/bin/
+CMD [ "docker-entrypoint.sh" ]

@@ -8,7 +8,8 @@ RUN apt-get update
 
 RUN apt-get install -y language-pack-en-base \
     software-properties-common \
-&& locale-gen en_US.UTF-8
+    apt-utils \
+&& locale-gen en_US.UTF-8 en_DK.UTF-8 en_GB.UTF-8
 
 # Add php repositories
 RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
@@ -36,6 +37,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-xdebug \
     php-memcached \
     mysql-client \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -54,8 +56,13 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 RUN php -r "unlink('composer-setup.php');"
 
+# Install configuration template handler
+ADD https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64 /usr/local/bin/confd
+RUN chmod +x /usr/local/bin/confd
+
 EXPOSE 9000
 
 WORKDIR /app
 
-CMD [ "php-fpm5.6", "-F", "--pid", "/var/run/php/php-fpm5.6.pid", "-y", "/etc/php/5.6/fpm/php-fpm.conf" ]
+COPY docker-entrypoint.sh /usr/local/bin/
+CMD [ "docker-entrypoint.sh" ]
