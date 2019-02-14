@@ -28,6 +28,9 @@ Commands:
   bin/*
   vendor/bin/*: Run command command inside phpfpm container
 
+  *:            Pass arguments to `docker-compose` and hope for the
+                best.
+
 EOF
 }
 
@@ -82,8 +85,12 @@ case "$cmd" in
     docker-compose exec phpfpm /app/$cmd "$@"
     ;;
 
-  *)
+  --help)
     usage
     exit
+    ;;
+
+  *)
+    docker-compose $cmd "$@"
     ;;
 esac
