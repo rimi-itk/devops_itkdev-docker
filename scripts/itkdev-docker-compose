@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+script_path=$script_dir/$(basename "${BASH_SOURCE[0]}")
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+function usage {
+  cat <<'EOF'
+Usage: itkdev-docker-compose command [command arguments]
+
+Commands:
+
+  url:          Print url to site
+
+  open:         Open url in default browser
+
+  drush:        Run drush command. If drush in installed via composer,
+                the vendor/bin/drush command is run inside the phpfpm
+                container. Otherwise, the drush container is used to
+                run the command.
+
+  composer:     Run composer command inside phpfpm container
+
+  bin/*
+  vendor/bin/*: Run command command inside phpfpm container
+
+EOF
+}
+
+if [ ! -e .env ]; then
+  (>&2 echo "${bold}.env file not found${normal}")
+  exit 1
+fi
+
+source .env
+
+if [ -z "${COMPOSE_PROJECT_NAME:-}" ]; then
+  (>&2 echo "${bold}Environment variable COMPOSE_PROJECT_NAME not defined in .env file${normal}")
+  exit 1
+fi
+
+if [ "$#" == "0" ]; then
+  usage
+  exit 1
+fi
+
+cmd="$1"
+shift
+
+case "$cmd" in
+  url)
+    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
+    url=http://${DNS}:$(docker-compose port reverse-proxy 80 | cut -d: -f2)
+    echo $url
+    ;;
+
+  open)
+    open $($script_path url)
+    ;;
+
+  drush)
+    root=/app
+    if [ -d web ]; then
+      root=/app/web
+    fi
+    if [ -e vendor/bin/drush ]; then
+      docker-compose exec phpfpm /app/vendor/bin/drush --root=$root "$@"
+    else
+      docker-compose run --rm drush --root=$root "$@"
+    fi
+    ;;
+
+  composer)
+    docker-compose exec phpfpm composer "$@"
+    ;;
+
+  bin/*|vendor/bin/*)
+    docker-compose exec phpfpm /app/$cmd "$@"
+    ;;
+
+  *)
+    usage
+    exit
+    ;;
+esac
