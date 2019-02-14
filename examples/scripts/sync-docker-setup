@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+templates_dir=$(cd $(dirname "${BASH_SOURCE[0]}")/../../templates && pwd)
+examples_dir=$(cd $(dirname "${BASH_SOURCE[0]}")/../../examples && pwd)
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+rsync -av $templates_dir/ $examples_dir

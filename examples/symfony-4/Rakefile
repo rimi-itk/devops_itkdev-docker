@@ -1,0 +1,10 @@
+PROJECT = 'symfony-4'
+
+task :shell do |t|
+  sh "docker-compose -p #{PROJECT} exec phpfpm bash"
+end
+
+task :composer, [:arguments] do |t, args|
+  puts args
+  # sh "docker-compose -p #{PROJECT} exec phpfpm composer"
+end
