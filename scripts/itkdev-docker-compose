@@ -23,6 +23,9 @@ Commands:
                 container. Otherwise, the drush container is used to
                 run the command.
 
+  sqlport:
+                Display the exposed MariaDB SQL server port.
+
   composer:     Run composer command inside phpfpm container
 
   bin/*
@@ -60,6 +63,10 @@ case "$cmd" in
 
   open)
     open $($script_path url)
+    ;;
+
+  sqlport)
+    docker-compose port mariadb 3306 | cut -d: -f2
     ;;
 
   drush)
