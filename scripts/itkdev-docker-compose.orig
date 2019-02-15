@@ -34,8 +34,8 @@ Commands:
   bin/*
   vendor/bin/*: Run command command inside phpfpm container
 
-  *:            Pass command and arguments to `docker-compose` and
-                hope for the best.
+  *:            Pass arguments to `docker-compose` and hope for the
+                best.
 
 EOF
 }

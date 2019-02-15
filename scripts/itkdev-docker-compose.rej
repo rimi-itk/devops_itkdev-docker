@@ -1,0 +1,67 @@
+***************
+*** 23,32 ****
+                  container. Otherwise, the drush container is used to
+                  run the command.
+  
+-   sqlport:
+-                 Display the exposed MariaDB SQL server port.
+    hosts:insert  Insert the docker site url into the hosts file.
+  
+  
+    xdebug:
+                  Boot the containers with PHP xdebug support enabled.
+--- 23,37 ----
+                  container. Otherwise, the drush container is used to
+                  run the command.
+  
+    hosts:insert  Insert the docker site url into the hosts file.
+  
++   sql:port:     Display the exposed MariaDB SQL server port.
++ 
++   sql:connect:  Print mysql command for connecting to database (called
++                 db) in the database container (called mariadb).
++ 
++                 Use `$(itkdev-docker-compose sql:connect)` to open the
++                 database cli.
+  
+    xdebug:
+                  Boot the containers with PHP xdebug support enabled.
+***************
+*** 71,77 ****
+      open $($script_path url)
+      ;;
+  
+-   sqlport)
+    hosts:insert)
+      DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
+      # Remove any existing entry
+--- 76,81 ----
+      open $($script_path url)
+      ;;
+  
+    hosts:insert)
+      DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
+      # Remove any existing entry
+***************
+*** 80,85 ****
+      echo "127.0.0.1 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
+      ;;
+  
+      docker-compose port mariadb 3306 | cut -d: -f2
+      ;;
+  
+--- 84,97 ----
+      echo "127.0.0.1 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
+      ;;
+  
++   sql:connect)
++     address=$(docker-compose port mariadb 3306)
++     host=$(echo $address | cut -d: -f1)
++     port=$(echo $address | cut -d: -f2)
++     echo mysql --host=$host --port=$port --user=db --password=db db
++     ;;
++ 
++   sql:port)
+      docker-compose port mariadb 3306 | cut -d: -f2
+      ;;
+  
