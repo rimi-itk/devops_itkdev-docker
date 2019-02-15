@@ -91,7 +91,7 @@ case "$cmd" in
     # Remove any existing entry
     sudo sed -i '.itkdev-docker-compose' "/$DNS/d" /etc/hosts
     # Append the entry
-    echo "127.0.0.1 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
+    echo "0.0.0.0 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
     ;;
 
   drush)
