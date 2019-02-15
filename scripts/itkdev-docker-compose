@@ -23,7 +23,13 @@ Commands:
                 container. Otherwise, the drush container is used to
                 run the command.
 
-  sqlport:
+  sql:connect:  Print mysql command for connecting to database (named
+                `db`) in the database container (`mariadb`).
+
+                Use `$(itkdev-docker-compose sql:connect)` to open the
+                database cli.
+
+  sql:port:
                 Display the exposed MariaDB SQL server port.
 
   xdebug:
@@ -71,7 +77,14 @@ case "$cmd" in
     open $($script_path url)
     ;;
 
-  sqlport)
+  sql:connect)
+    address=$(docker-compose port mariadb 3306)
+    host=$(echo $address | cut -d: -f1)
+    port=$(echo $address | cut -d: -f2)
+    echo mysql --host=$host --port=$port --user=db --password=db db
+    ;;
+
+  sql:port)
     docker-compose port mariadb 3306 | cut -d: -f2
     ;;
 
