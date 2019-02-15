@@ -29,6 +29,8 @@ Commands:
   xdebug:
                 Boot the containers with PHP xdebug support enabled.
 
+  hosts:insert  Insert the docker site url into the hosts file.
+
   composer:     Run composer command inside phpfpm container
 
   bin/*
@@ -82,6 +84,14 @@ case "$cmd" in
     PHP_XDEBUG_REMOTE_PORT=9000 \
     PHP_XDEBUG_REMOTE_CONNECT_BACK=0 \
     docker-compose up -d
+    ;;
+
+  hosts:insert)
+    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
+    # Remove any existing entry
+    sudo sed -i '.itkdev-docker-compose' "/$DNS/d" /etc/hosts
+    # Append the entry
+    echo "127.0.0.1 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
     ;;
 
   drush)
