@@ -1,0 +1,7 @@
+[template]
+src = "30-sendmail.ini.tmpl"
+dest = "/etc/php/7.3/fpm/conf.d/30-sendmail.ini"
+mode = "0644"
+keys = [
+    "/sendmail"
+]
