@@ -26,6 +26,9 @@ Commands:
   sqlport:
                 Display the exposed MariaDB SQL server port.
 
+  xdebug:
+                Boot the containers with PHP xdebug support enabled.
+
   composer:     Run composer command inside phpfpm container
 
   bin/*
@@ -72,6 +75,15 @@ case "$cmd" in
     docker-compose port mariadb 3306 | cut -d: -f2
     ;;
 
+  xdebug)
+    PHP_XDEBUG=1 \
+    PHP_XDEBUG_REMOTE_AUTOSTART=1 \
+    PHP_XDEBUG_REMOTE_HOST=$(ipconfig getifaddr en0) \
+    PHP_XDEBUG_REMOTE_PORT=9000 \
+    PHP_XDEBUG_REMOTE_CONNECT_BACK=0 \
+    docker-compose up -d
+    ;;
+
   drush)
     root=/app
     if [ -d web ]; then
@@ -98,7 +110,6 @@ case "$cmd" in
     ;;
 
   *)
-    HOST_IP=$(ipconfig getifaddr en0) \
     docker-compose $cmd "$@"
     ;;
 esac
