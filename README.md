@@ -60,6 +60,13 @@ echo 'export PATH="'$(git rev-parse --show-toplevel)/scripts':$PATH"' >> ~/.zshr
 
 After updating your path, run `itkdev-docker-compose` in your project folder to see what the script can do.
 
+### Completion
+To enable bash completion (tab commands).
+
+```sh
+ln -s $(git rev-parse --show-toplevel)/scripts/itkdev-docker-compose-completion.bash $(brew --prefix)/etc/bash_completion.d/itkdev-docker-compose
+```
+
 ## Docker UI
 If you want a graphical user interface to see what images and containers are running in you local setup you can use "potainer".
 
