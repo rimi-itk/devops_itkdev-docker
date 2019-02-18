@@ -6,7 +6,7 @@ _idc_completions()
   fi
 
   # Keep the suggestions in a local variable
-  local suggestions=($(compgen -W "url open drush sql:connect sql:port xdebug host:insert composer" -- "${COMP_WORDS[1]}"))
+  local suggestions=($(compgen -W "url open drush mailhog:open mailhog:url sql:connect sql:port xdebug host:insert composer" -- "${COMP_WORDS[1]}"))
 
 
   for i in "${!suggestions[@]}"; do

@@ -32,6 +32,11 @@ Commands:
   sql:port:
                 Display the exposed MariaDB SQL server port.
 
+  mailhog:url:
+                URL for the mailhog web-interface.
+  mailhog:open:
+                Open mailhog url in default browser
+
   xdebug:
                 Boot the containers with PHP xdebug support enabled.
 
@@ -88,6 +93,15 @@ case "$cmd" in
 
   sql:port)
     docker-compose port mariadb 3306 | cut -d: -f2
+    ;;
+
+  mailhog:url)
+    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
+    url=http://${DNS}:$(docker-compose port mailhog 8025 | cut -d: -f2)
+    echo $url;;
+
+  mailhog:open)
+    open $(itkdev-docker-compose mailhog:url)
     ;;
 
   xdebug)
