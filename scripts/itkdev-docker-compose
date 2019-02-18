@@ -32,9 +32,9 @@ Commands:
   sql:port:
                 Display the exposed MariaDB SQL server port.
 
-  open:url:
+  mailhog:url:
                 URL for the mailhog web-interface.
-  open:mailhog:
+  mailhog:open:
                 Open mailhog url in default browser
 
   xdebug:
