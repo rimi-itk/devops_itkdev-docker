@@ -16,4 +16,5 @@ _idc_completions()
   COMPREPLY=("${suggestions[@]}")
 }
 
-complete -F _idc_completions itkdev-docker-compose idc
+complete -F _idc_completions itkdev-docker-compose
+complete -F _idc_completions idc
