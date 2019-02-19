@@ -40,6 +40,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xdebug \
     php-memcached \
     mysql-client \
+    unzip \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/

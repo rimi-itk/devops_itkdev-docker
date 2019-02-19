@@ -28,6 +28,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     libmcrypt-dev \
     libreadline-dev \
     mysql-client \
+    unzip \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/
