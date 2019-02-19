@@ -51,7 +51,7 @@ services:
     volumes:
       - ${PWD}/.docker/ereolen.vcl:/etc/varnish/ereolen.vcl:ro
     labels:
-      - "traefik.frontend.rule=Host:ereolen.docker.localhost"
+      - "traefik.frontend.rule=Host:${COMPOSE_PROJECT_NAME}.docker.localhost"
 
   mailhog:
     image: mailhog/mailhog
