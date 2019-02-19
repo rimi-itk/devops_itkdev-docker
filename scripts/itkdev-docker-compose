@@ -53,15 +53,35 @@ Commands:
 EOF
 }
 
-if [ ! -e .env ]; then
-  (>&2 echo "${bold}.env file not found${normal}")
+# @see https://unix.stackexchange.com/questions/13464/is-there-a-way-to-find-a-file-in-an-inverse-recursive-search/13474
+upsearch () {
+  slashes=${PWD//[^\/]/}
+  directory="$PWD"
+  for (( n=${#slashes}; n>0; --n ))
+  do
+    test -e "$directory/$1" && echo "$directory/$1" && return
+    directory="$directory/.."
+  done
+}
+
+docker_compose_file=$(upsearch 'docker-compose.yml')
+if [ -z "$docker_compose_file" ]; then
+  (>&2 echo "${bold}Cannot find docker-compose.yml file${normal}")
   exit 1
 fi
 
-source .env
+docker_compose_dir=$(cd $(dirname "$docker_compose_file") && pwd)
+dot_env_file="$docker_compose_dir/.env"
+
+if [ -z "$dot_env_file" ]; then
+  (>&2 echo "${bold}$dot_env_file not found${normal}")
+  exit 1
+fi
+
+source $dot_env_file
 
 if [ -z "${COMPOSE_PROJECT_NAME:-}" ]; then
-  (>&2 echo "${bold}Environment variable COMPOSE_PROJECT_NAME not defined in .env file${normal}")
+  (>&2 echo "${bold}Environment variable COMPOSE_PROJECT_NAME not defined in $dot_env_file${normal}")
   exit 1
 fi
 
@@ -147,6 +167,8 @@ case "$cmd" in
     ;;
 
   *)
-    docker-compose $cmd "$@"
+    # Note: Apparently, using --project-directory or --file options for `docker-compose` will break use of `$PWD` in
+    # docker-compose.yml. Therefore, we `cd` before running `docker-compose` command.
+    (cd "$docker_compose_dir" && docker-compose "$cmd" "$@")
     ;;
 esac
