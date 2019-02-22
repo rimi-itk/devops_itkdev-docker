@@ -23,12 +23,14 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-zip \
     php${PHP_VERSION}-dev \
     php${PHP_VERSION}-xdebug \
+    php${PHP_VERSION}-intl \
     php-memcached \
     php-pear \
     libmcrypt-dev \
     libreadline-dev \
     mysql-client \
     unzip \
+    git \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/

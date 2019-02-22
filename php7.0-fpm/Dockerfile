@@ -22,10 +22,12 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-intl \
     php-xdebug \
     php-memcached \
     mysql-client \
     unzip \
+    git \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/
