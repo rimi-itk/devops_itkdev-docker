@@ -150,10 +150,10 @@ case "$cmd" in
 
   drush)
     root=/app
-    if [ -d web ]; then
+    if [ -d $docker_compose_dir/web ]; then
       root=/app/web
     fi
-    if [ -e vendor/bin/drush ]; then
+    if [ -e $docker_compose_dir/vendor/bin/drush ]; then
       docker_compose exec phpfpm /app/vendor/bin/drush --root=$root "$@"
     else
       docker_compose run --rm drush --root=$root "$@"
