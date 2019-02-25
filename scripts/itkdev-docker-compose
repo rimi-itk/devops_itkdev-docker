@@ -43,7 +43,7 @@ Commands:
   hosts:insert  Insert the docker site url into the hosts file.
 
   images:pull
-                Updated/pull all docker images.
+                Update/pull all docker images.
 
   composer:     Run composer command inside phpfpm container
 
