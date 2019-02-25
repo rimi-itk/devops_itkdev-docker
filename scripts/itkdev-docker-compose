@@ -42,6 +42,9 @@ Commands:
 
   hosts:insert  Insert the docker site url into the hosts file.
 
+  images:pull
+                Update/pull all docker images.
+
   composer:     Run composer command inside phpfpm container
 
   bin/*
@@ -146,6 +149,16 @@ case "$cmd" in
     sudo sed -i '.itkdev-docker-compose' "/$DNS/d" /etc/hosts
     # Append the entry
     echo "0.0.0.0 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
+    ;;
+
+  images:pull)
+    docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>" | sort | uniq
+    read -p "Are you sure you want to update all images? " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]
+    then
+      docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>" | sort | uniq | xargs -L1 docker pull
+    fi
     ;;
 
   drush)
