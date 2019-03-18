@@ -137,8 +137,7 @@ case "$cmd" in
       exit 1
     fi
 
-    ssh deploy@${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
-
+    ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
     ;;
 
   sync:files)
