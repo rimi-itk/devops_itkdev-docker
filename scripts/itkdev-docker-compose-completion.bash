@@ -1,6 +1,9 @@
 #/usr/bin/env bash
 _idc_completions()
 {
+  local cur
+  _get_comp_words_by_ref -n : cur
+
   if [ "${#COMP_WORDS[@]}" != "2" ]; then
     return
   fi
@@ -9,6 +12,8 @@ _idc_completions()
   local suggestions=($(compgen -W "url open drush mailhog:open mailhog:url sql:connect sql:port xdebug host:insert sync sync:db sync:files images:pull composer" -- "${COMP_WORDS[1]}"))
 
   COMPREPLY=("${suggestions[@]}")
+
+  __ltrim_colon_completions "$cur"
 }
 
 complete -F _idc_completions itkdev-docker-compose
