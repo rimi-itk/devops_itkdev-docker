@@ -205,7 +205,7 @@ case "$cmd" in
 
   images:pull)
     docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>" | sort | uniq
-    read -p "Are you sure you want to updat all images? " -n 1 -r
+    read -p "Are you sure you want to update all images? " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
