@@ -23,6 +23,14 @@ Commands:
                 container. Otherwise, the drush container is used to
                 run the command.
 
+  sync          Sync both database and files.
+
+  sync:db       Sync database base on 'REMOTE_DB_DUMP_CMD' in the env
+                file.
+
+  sync:files    Syne files base on 'REMOTE_PATH' or 'LOCAL_PATH' in
+                the env file.
+
   sql:connect:  Print mysql command for connecting to database (named
                 `db`) in the database container (`mariadb`).
 
@@ -114,6 +122,50 @@ case "$cmd" in
     open $($script_path url)
     ;;
 
+  sync)
+    itkdev-docker-compose sync:db
+    itkdev-docker-compose sync:files
+    ;;
+
+  sync:db)
+    if [ -z "${REMOTE_HOST:-}" ]; then
+      (>&2 echo "${bold}Environment variable REMOTE_HOST not defined in $dot_env_file${normal}")
+      exit 1
+    fi
+    if [ -z "${REMOTE_DB_DUMP_CMD:-}" ]; then
+      (>&2 echo "${bold}Environment variable REMOTE_DB_DUMP_CMD not defined in $dot_env_file${normal} see readme for more information about this setting")
+      exit 1
+    fi
+
+    ssh deploy@${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
+
+    ;;
+
+  sync:files)
+    if [ -z "${REMOTE_HOST:-}" ]; then
+      (>&2 echo "${bold}Environment variable REMOTE_HOST not defined in $dot_env_file${normal}")
+      exit 1
+    fi
+    if [ -z "${REMOTE_PATH:-}" ]; then
+      (>&2 echo "${bold}Environment variable REMOTE_PATH not defined in $dot_env_file${normal}")
+      exit 1
+    fi
+    if [ -z "${LOCAL_PATH:-}" ]; then
+      (>&2 echo "${bold}Environment variable LOCAL_PATH not defined in $dot_env_file${normal}")
+      exit 1
+    fi
+
+    REMOTE_PATH=${REMOTE_PATH%/}
+    LOCAL_PATH=${LOCAL_PATH%/}
+    excludes=''
+    for i in "${REMOTE_EXCLUDE[@]}"
+    do
+      excludes+="--exclude='${i}' "
+    done
+
+    rsync -avz ${excludes} -e ${REMOTE_HOST}:${REMOTE_PATH}/ ${docker_compose_dir}/${LOCAL_PATH}
+    ;;
+
   sql:connect)
     address=$(docker_compose port mariadb 3306)
     host=$(echo $address | cut -d: -f1)
@@ -153,7 +205,7 @@ case "$cmd" in
 
   images:pull)
     docker images --format "{{.Repository}}:{{.Tag}}" | grep -v "<none>" | sort | uniq
-    read -p "Are you sure you want to update all images? " -n 1 -r
+    read -p "Are you sure you want to updat all images? " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]
     then

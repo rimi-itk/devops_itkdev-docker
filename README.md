@@ -60,6 +60,21 @@ echo 'export PATH="'$(git rev-parse --show-toplevel)/scripts':$PATH"' >> ~/.zshr
 
 After updating your path, run `itkdev-docker-compose` in your project folder to see what the script can do.
 
+## Environment
+The helper script uses an `.env` file in the root of the project for projekt base configuration.
+
+The `COMPOSE_PROJECT_NAME` is always required and the script will stop execution if any of the need variables have not been set when needed.
+
+### Example .env file
+```sh
+COMPOSE_PROJECT_NAME=ereolen
+REMOTE_HOST=ereolen.dk
+REMOTE_DB_DUMP_CMD='drush --root=/data/www/ereolen_dk/htdocs --uri=ereolen.dk sql-dump'
+REMOTE_PATH='/data/www/ereolen_dk/htdocs/sites/default/files'
+REMOTE_EXCLUDE=(ting styles advagg_*)
+LOCAL_PATH='sites/default/files'
+```
+
 ### Completion
 To enable bash completion (tab commands).
 
