@@ -63,6 +63,11 @@ services:
     volumes:
       - drush-cache:/root/.drush
       - ./:/app
+  
+  node:
+    image: node:6
+    volumes:
+      - .:/app:delegated
 
   reverse-proxy:
     image: traefik  # The official Traefik docker image
