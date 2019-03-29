@@ -45,6 +45,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     mysql-client \
     unzip \
     git \
+    imagemagick \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN mkdir /var/run/php/
