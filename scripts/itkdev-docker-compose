@@ -14,51 +14,63 @@ Usage: itkdev-docker-compose command [command arguments]
 
 Commands:
 
-  url:          Print url to site
+  url
+                Print url to site
 
-  open:         Open url in default browser
+  open
+                Open url in default browser
 
-  drush:        Run drush command. If drush in installed via composer,
+  drush
+                Run drush command. If drush in installed via composer,
                 the vendor/bin/drush command is run inside the phpfpm
                 container. Otherwise, the drush container is used to
                 run the command.
 
-  sync          Sync both database and files.
+  sync
+                Sync both database and files.
 
-  sync:db       Sync database base on 'REMOTE_DB_DUMP_CMD' in the env
+  sync:db
+                Sync database base on 'REMOTE_DB_DUMP_CMD' in the env
                 file.
 
-  sync:files    Syne files base on 'REMOTE_PATH' or 'LOCAL_PATH' in
+  sync:files
+                Sync files base on 'REMOTE_PATH' or 'LOCAL_PATH' in
                 the env file.
 
-  sql:connect:  Print mysql command for connecting to database (named
+  sql:connect
+                Print mysql command for connecting to database (named
                 `db`) in the database container (`mariadb`).
 
                 Use `$(itkdev-docker-compose sql:connect)` to open the
                 database cli.
 
-  sql:port:
+  sql:port
                 Display the exposed MariaDB SQL server port.
 
-  mailhog:url:
+  mailhog:url
                 URL for the mailhog web-interface.
-  mailhog:open:
+
+  mailhog:open
                 Open mailhog url in default browser
 
-  xdebug:
+  xdebug
                 Boot the containers with PHP xdebug support enabled.
 
-  hosts:insert  Insert the docker site url into the hosts file.
+  hosts:insert
+                Insert the docker site url into the hosts file.
 
   images:pull
                 Update/pull all docker images.
 
-  composer:     Run composer command inside phpfpm container
+  composer
+                Run composer command inside phpfpm container
 
   bin/*
-  vendor/bin/*: Run command command inside phpfpm container
+  vendor/bin/*
+                Run command command inside phpfpm container
 
-  *:            Pass command and arguments to `docker-compose` and
+  *
+                Pass command and arguments to `docker-compose` and
                 hope for the best.
 
 EOF
