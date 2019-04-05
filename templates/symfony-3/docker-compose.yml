@@ -2,7 +2,7 @@ version: "3"
 
 services:
   mariadb:
-    image: mariadb:10.3
+    image: itkdev/php7.2-fpm:latest
     ports:
       - '3306'
     environment:
@@ -25,6 +25,7 @@ services:
       - mariadb
     volumes:
       - .:/app:delegated
+      - drush-cache:/root/.drush
 
   nginx:
     image: nginx:latest
@@ -59,3 +60,7 @@ services:
       - "8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock  # So that Traefik can listen to the Docker events
+
+# Drush cache volume to persist cache between runs.
+volumes:
+  drush-cache:
