@@ -2,7 +2,7 @@ version: "3"
 
 services:
   mariadb:
-    image: itkdev/php7.2-fpm:latest
+    image: itkdev/mariadb:latest
     ports:
       - '3306'
     volumes:
