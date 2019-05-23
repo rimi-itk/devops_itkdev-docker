@@ -17,4 +17,6 @@ RUN composer global require drush/drush:"$DRUSH_VERSION" --prefer-dist
 # Display which version of Drush was installed
 RUN /root/.composer/vendor/bin/drush --version
 
-ENTRYPOINT ["/root/.composer/vendor/bin/drush"]
+ENV PATH="/root/.composer/vendor/bin/:${PATH}"
+
+ENTRYPOINT ["drush"]
