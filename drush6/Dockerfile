@@ -1,15 +1,15 @@
 
-FROM itkdev/php5.6-fpm
+FROM itkdev/php7.0-fpm
 MAINTAINER ITK dev <itkdev@mkb.aarhus.dk>
 
 ENV DRUSH_VERSION 6.7.0
-ENV PHP_VERSION 5.6
 
 # Ensure packages are avaiable.
 RUN apt-get update
 
 RUN DEBIAN_FRONTEND=noninteractive \
-  apt-get install -y curl
+  apt-get install -y curl \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install Drush using Composer.
 RUN composer global require drush/drush:"$DRUSH_VERSION" --prefer-dist
