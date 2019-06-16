@@ -2,7 +2,7 @@ version: "3"
 
 services:
   mariadb:
-    image: mariadb:10.3
+    image: itkdev/mariadb:latest
     ports:
       - '3306'
     volumes:
@@ -15,17 +15,19 @@ services:
 
   phpfpm:
     image: itkdev/php7.0-fpm:latest
-    restart: always
     environment:
       - PHP_XDEBUG=${PHP_XDEBUG:-0}
       - PHP_XDEBUG_REMOTE_AUTOSTART=${PHP_XDEBUG_REMOTE_AUTOSTART:-0}
       - PHP_XDEBUG_REMOTE_HOST=${PHP_XDEBUG_REMOTE_HOST:-0.0.0.0}
       - PHP_XDEBUG_REMOTE_CONNECT_BACK=${PHP_XDEBUG_REMOTE_CONNECT_BACK:-0}
+      - PHP_MAX_EXECUTION_TIME=30
+      - PHP_MEMORY_LIMIT=512M
       # - PHP_MAIL=1 # Uncomment to enable mailhog
     depends_on:
       - mariadb
     volumes:
       - .:/app:delegated
+      - drush-cache:/root/.drush
 
   nginx:
     image: nginx:latest
@@ -49,7 +51,6 @@ services:
 
   mailhog:
     image: mailhog/mailhog
-    restart: always
     ports:
       - "1025"
       - "8025"
