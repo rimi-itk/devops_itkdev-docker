@@ -15,6 +15,29 @@ There are some simple tricks that makes docker perform better on Mac's. Open the
 
 # Usage
 
+## Requirement for all commands to work.
+
+You need to have some local packages installed via brew for all things to work.
+
+Completions don't work with the bash completion that comes with macOS. So please install a newer version:
+
+```
+brew install bash-completion
+```
+
+__Note__: You have to follow the instructions brew writes to get it working (use
+`brew info bash-completion` to show the info).
+
+The database sync will not work if you don't have a local mysql client installed:
+
+```
+brew install mysql-client
+```
+
+__Note__: You have to follow the instructions brew writes to get it working (use
+`brew info mysql-client` to show the info).
+
+
 ## Templates
 
 The [`templates`](templates/) directory contains templates for adding
