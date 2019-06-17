@@ -185,7 +185,7 @@ EOF
       excludes+="--exclude='${i}' "
     done
 
-    rsync -avz ${excludes} ${REMOTE_HOST}:${REMOTE_PATH}/ ${docker_compose_dir}/${LOCAL_PATH}
+    eval rsync -avz ${excludes} ${REMOTE_HOST}:${REMOTE_PATH}/ ${docker_compose_dir}/${LOCAL_PATH}
     ;;
 
   sql:connect)
