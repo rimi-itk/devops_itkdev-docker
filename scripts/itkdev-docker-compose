@@ -149,7 +149,18 @@ case "$cmd" in
       exit 1
     fi
 
-    ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
+    if command -v pv >/dev/null 2>&1; then
+      ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | pv | eval $(itkdev-docker-compose sql:connect)
+    else
+      cat <<EOF
+Protip: run
+
+  brew install pv
+
+to show progress
+EOF
+      ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
+    fi
     ;;
 
   sync:files)
