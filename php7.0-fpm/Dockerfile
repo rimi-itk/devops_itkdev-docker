@@ -24,6 +24,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-zip \
     php${PHP_VERSION}-intl \
     php-xdebug \
+    php-redis \
     php-memcached \
     mysql-client \
     unzip \

@@ -40,6 +40,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xdebug \
     php${PHP_VERSION}-intl \
     php-memcached \
+    php-redis \
     mysql-client \
     unzip \
     git \
