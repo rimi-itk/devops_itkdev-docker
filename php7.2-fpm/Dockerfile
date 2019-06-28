@@ -25,7 +25,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xdebug \
     php${PHP_VERSION}-intl \
     php-memcached \
-    php-redis \
     php-pear \
     libmcrypt-dev \
     libreadline-dev \
@@ -40,7 +39,11 @@ COPY etc/ /etc/
 
 # Configure php
 RUN pecl install mcrypt-1.0.2
-RUN echo extension=mcrypt.so >> /etc/php/${PHP_VERSION}/fpm/php.ini
+RUN /usr/sbin/phpenmod mcrypt
+
+RUN yes '' | pecl install redis-4.3.0
+RUN /usr/sbin/phpenmod redis
+
 RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/;date.timezone =/c date.timezone = Europe\/Copenhagen' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/upload_max_filesize = 2M/c upload_max_filesize = 16M' /etc/php/${PHP_VERSION}/fpm/php.ini \

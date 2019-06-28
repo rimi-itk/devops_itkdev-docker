@@ -24,7 +24,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-zip \
     php${PHP_VERSION}-intl \
     php-xdebug \
-    php-redis \
+    php-pear \
     php-memcached \
     mysql-client \
     unzip \
@@ -36,6 +36,9 @@ RUN mkdir /var/run/php/
 COPY etc/ /etc/
 
 # Configure php
+RUN yes '' | pecl install redis-4.3.0
+RUN /usr/sbin/phpenmod redis
+
 RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/;date.timezone =/c date.timezone = Europe\/Copenhagen' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/upload_max_filesize = 2M/c upload_max_filesize = 16M' /etc/php/${PHP_VERSION}/fpm/php.ini \
