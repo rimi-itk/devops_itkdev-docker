@@ -6,10 +6,11 @@ services:
     ports:
       - '3306'
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: db
-      MYSQL_PASSWORD: db
-      MYSQL_DATABASE: db
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=db
+      - MYSQL_PASSWORD=db
+      - MYSQL_DATABASE=db
+      #- ENCRYPT=1 # Uncomment to enable database encryptionn.
 
   phpfpm:
     image: itkdev/php7.2-fpm:latest
@@ -20,8 +21,7 @@ services:
       - PHP_XDEBUG_REMOTE_CONNECT_BACK=${PHP_XDEBUG_REMOTE_CONNECT_BACK:-0}
       - PHP_MAX_EXECUTION_TIME=30
       - PHP_MEMORY_LIMIT=256M
-      # - PHP_MAIL=1 # Uncomment to enable mailhog
-    depends_on:
+      # - PHP_MAIL=1 # Uncomment to enable mailhog.
       - mariadb
     volumes:
       - .:/app:delegated
