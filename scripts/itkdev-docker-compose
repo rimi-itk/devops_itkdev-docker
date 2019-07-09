@@ -59,6 +59,10 @@ Commands:
   hosts:insert
                 Insert the docker site url into the hosts file.
 
+  hosts:add-host-ip
+                Insert the host ip address and url into the hosts file in the
+                phpfpm container.
+
   images:pull
                 Update/pull all docker images.
 
@@ -223,6 +227,19 @@ EOF
     sudo sed -i '.itkdev-docker-compose' "/$DNS/d" /etc/hosts
     # Append the entry
     echo "0.0.0.0 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
+    ;;
+
+  hosts:add-host-ip)
+    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
+    # Remove any existing entry (note: `sed --in-place` will not work on
+    # /etc/hosts; cf. https://unix.stackexchange.com/a/404356)
+    docker_compose exec phpfpm bash -c 'sed "/'$DNS'/d" /etc/hosts > /tmp/hosts && cp /tmp/hosts /etc/hosts'
+    # Append the entry
+    docker-compose exec phpfpm bash -c 'echo $(getent hosts host.docker.internal | cut -d" " -f1) '$DNS' \# itkdev-docker-compose >> /etc/hosts'
+    echo 'Added to /etc/hosts in phpfpm container:'
+    echo
+    docker-compose exec phpfpm bash -c 'grep '$DNS' /etc/hosts'
+    echo
     ;;
 
   images:pull)
