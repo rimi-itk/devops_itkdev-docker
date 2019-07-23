@@ -215,6 +215,31 @@ EOF
     PHP_XDEBUG_REMOTE_PORT=9000 \
     PHP_XDEBUG_REMOTE_CONNECT_BACK=0 \
     docker_compose up -d
+
+    cat <<'EOF' | sed "s|«project directory»|$PWD|"
+
+================================================================================
+
+To debug from the command line, add `PHP_IDE_CONFIG=serverName=localhost` to the
+`phpfpm` environment:
+
+# docker-compose.yml
+phpfpm:
+    image: itkdev/php7.2-fpm:latest
+    environment:
+      …
+      - PHP_IDE_CONFIG=serverName=localhost
+
+and define "localhost" as a server in PhpStorm (Preferences > Languages &
+Frameworks > PHP > Servers):
+
+Name: localhost
+Host: localhost
+Path mapping: «project directory» → /app
+
+================================================================================
+
+EOF
     ;;
 
   hosts:insert)
