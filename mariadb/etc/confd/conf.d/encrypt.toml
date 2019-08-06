@@ -1,0 +1,7 @@
+[template]
+src = "60-encrypt.cnf.tmpl"
+dest = "/etc/mysql/mariadb.conf.d/60-encrypt.cnf"
+mode = "0644"
+keys = [
+    "/mariadb"
+]
