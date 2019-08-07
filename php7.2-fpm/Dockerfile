@@ -4,9 +4,15 @@ LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
 ENV PHP_VERSION 7.2
 
 RUN apt-get update
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y \
+    apt-utils
+    
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     php${PHP_VERSION} \
+    php${PHP_VERSION}-dev \
     php${PHP_VERSION}-cli \
     php${PHP_VERSION}-common \
     php${PHP_VERSION}-curl \

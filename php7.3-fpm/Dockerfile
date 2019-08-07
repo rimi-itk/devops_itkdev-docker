@@ -6,6 +6,10 @@ ENV PHP_VERSION 7.3
 # Ensure packages are avaiable.
 RUN apt-get update
 
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y \
+    apt-utils
+
 RUN apt-get install -y language-pack-en-base \
     software-properties-common \
 && locale-gen en_US.UTF-8
@@ -21,6 +25,7 @@ RUN apt-get remove -y software-properties-common language-pack-en-base \
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     php${PHP_VERSION} \
+    php${PHP_VERSION}-dev \
     php${PHP_VERSION}-cli \
     php${PHP_VERSION}-common \
     php${PHP_VERSION}-curl \

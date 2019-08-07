@@ -2,6 +2,14 @@
 FROM mariadb:10.3
 MAINTAINER ITK dev <itkdev@mkb.aarhus.dk>
 
+# Ensure packages are avaiable.
+RUN apt-get update
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y \
+    openssl \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 # Copy configuration
 COPY etc/confd /etc/confd
 COPY docker.cnf /etc/mysql/conf.d/docker.cnf
