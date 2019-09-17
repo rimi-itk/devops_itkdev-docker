@@ -240,6 +240,10 @@ Name: localhost
 Host: localhost
 Path mapping: «project directory» → /app
 
+You may also want to uncheck "Force break at first line when no path mapping
+specified" and/or "Force break at first line when a script is outsite the
+project" in PhpStorm (Preferences > Languages & Frameworks > PHP > Debug).
+
 ================================================================================
 
 EOF
