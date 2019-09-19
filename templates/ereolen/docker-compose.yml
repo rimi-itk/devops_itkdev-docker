@@ -54,7 +54,7 @@ services:
     volumes:
       - ${PWD}/.docker/ereolen.vcl:/etc/varnish/ereolen.vcl:ro
     labels:
-      - "traefik.frontend.rule=Host:${COMPOSE_PROJECT_NAME}.docker.localhost"
+      - "traefik.http.routers.frontend.rule=Host(`${COMPOSE_PROJECT_NAME}.docker.localhost`)"
 
   mailhog:
     image: mailhog/mailhog
@@ -73,8 +73,8 @@ services:
       - ./:/app
 
   reverse-proxy:
-    image: traefik  # The official Traefik docker image
-    command: --api --docker  # Enables the web UI and tells Traefik to listen to docker
+    image: traefiki:2.0  # The official Traefik docker image
+    command: --api.insecure=true --providers.docker # Enables the web UI and tells Traefik to listen to docker
     ports:
       - "80"
       - "8080"
