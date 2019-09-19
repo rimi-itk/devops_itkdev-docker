@@ -110,12 +110,22 @@ REMOTE_EXCLUDE=(ting styles advagg_*)
 LOCAL_PATH='sites/default/files'
 ```
 
-#### Completion
+## Completions
 
-To enable bash completion (tab commands).
+### Bash
+
+You can install completions for `bash` by running:
 
 ```sh
-ln -s $(git rev-parse --show-toplevel)/scripts/itkdev-docker-compose-completion.bash $(brew --prefix)/etc/bash_completion.d/itkdev-docker-compose
+ln -s $(git rev-parse --show-toplevel)/completion/bash/itkdev-docker-compose-completion.bash $(brew --prefix)/etc/bash_completion.d/itkdev-docker-compose
+```
+
+### Zsh
+
+You can install completions for `zsh` by updating `fpath` in `~/.zshrc`, e.g. by running:
+
+```sh
+echo "fpath=($(git rev-parse --show-toplevel)/completion/zsh \$fpath) # itkdev-docker " >> ~/.zshrc
 ```
 
 ### Docker UI
