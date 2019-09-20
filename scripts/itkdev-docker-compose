@@ -76,6 +76,37 @@ Commands:
                 Pass command and arguments to `docker-compose` and
                 hope for the best.
 
+Configuration:
+
+  The environment variable COMPOSE_PROJECT_NAME must be set in the env file (`.env`).
+
+  These environment variables may be set in the env file:
+
+    COMPOSE_DOMAIN
+                The domain to use when generating urls
+
+    COMPOSE_URL
+                The url to use when generating urls
+
+    REMOTE_HOST
+                Host used when pulling data from remove site
+
+    REMOTE_DB_DUMP_CMD
+                 Command used to dump database on remote host
+
+    REMOTE_PATH
+                File path on remote host
+
+    REMOTE_EXCLUDE
+                List of rsync exclude patterns to use when pulling files, e.g.
+                REMOTE_EXCLUDE=(ting styles advagg_*)
+
+    LOCAL_PATH
+                Local file path
+
+  Local overrides of these variables can be defined in `.env.local` which should
+  NOT be commited to Git.
+
 EOF
 }
 
@@ -105,11 +136,16 @@ if [ -z "$dot_env_file" ]; then
 fi
 
 source $dot_env_file
+if [ -e $dot_env_file.local ]; then
+  source $dot_env_file.local
+fi
 
 if [ -z "${COMPOSE_PROJECT_NAME:-}" ]; then
   (>&2 echo "${bold}Environment variable COMPOSE_PROJECT_NAME not defined in $dot_env_file${normal}")
   exit 1
 fi
+
+COMPOSE_DOMAIN=${COMPOSE_DOMAIN:-${COMPOSE_PROJECT_NAME}.docker.localhost}
 
 if [ "$#" == "0" ]; then
   usage
@@ -128,9 +164,7 @@ shift
 
 case "$cmd" in
   url)
-    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
-    url=http://${DNS}:$(docker_compose port reverse-proxy 80 | cut -d: -f2)
-    echo $url
+    echo ${COMPOSE_URL:-http://${COMPOSE_DOMAIN}:$(docker_compose port reverse-proxy 80 | cut -d: -f2)}
     ;;
 
   open)
@@ -183,10 +217,12 @@ EOF
     REMOTE_PATH=${REMOTE_PATH%/}
     LOCAL_PATH=${LOCAL_PATH%/}
     excludes=''
-    for i in "${REMOTE_EXCLUDE[@]}"
-    do
-      excludes+="--exclude='${i}' "
-    done
+    if [ ! -z "${REMOTE_EXCLUDE:-}" ]; then
+      for i in "${REMOTE_EXCLUDE[@]}"
+      do
+        excludes+="--exclude='${i}' "
+      done
+    fi
 
     eval rsync -avz ${excludes} ${REMOTE_HOST}:${REMOTE_PATH}/ ${docker_compose_dir}/${LOCAL_PATH}
     ;;
@@ -203,8 +239,7 @@ EOF
     ;;
 
   mailhog:url)
-    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
-    url=http://${DNS}:$(docker_compose port mailhog 8025 | cut -d: -f2)
+    url=http://${COMPOSE_DOMAIN}:$(docker_compose port mailhog 8025 | cut -d: -f2)
     echo $url;;
 
   mailhog:open)
@@ -250,11 +285,10 @@ EOF
     ;;
 
   hosts:insert)
-    DNS=${COMPOSE_PROJECT_NAME}.docker.localhost
     # Remove any existing entry
-    sudo sed -i '.itkdev-docker-compose' "/$DNS/d" /etc/hosts
+    sudo sed -i '.itkdev-docker-compose' "/${COMPOSE_DOMAIN}/d" /etc/hosts
     # Append the entry
-    echo "0.0.0.0 $DNS # itkdev-docker-compose" | sudo tee -a /etc/hosts
+    echo "0.0.0.0 ${COMPOSE_DOMAIN} # itkdev-docker-compose" | sudo tee -a /etc/hosts
     ;;
 
   images:pull)
