@@ -85,9 +85,6 @@ Configuration:
     COMPOSE_DOMAIN
                 The domain to use when generating urls
 
-    COMPOSE_URL
-                The url to use when generating urls
-
     REMOTE_HOST
                 Host used when pulling data from remove site
 
@@ -145,7 +142,9 @@ if [ -z "${COMPOSE_PROJECT_NAME:-}" ]; then
   exit 1
 fi
 
-COMPOSE_DOMAIN=${COMPOSE_DOMAIN:-${COMPOSE_PROJECT_NAME}.docker.localhost}
+# Needs to be exported as it's used in docker-compose.yml and if not set in .env it will be the 
+# empty string, hence default to *.docker.localhost will not work.
+export COMPOSE_DOMAIN=${COMPOSE_DOMAIN:-${COMPOSE_PROJECT_NAME}.docker.localhost}
 
 if [ "$#" == "0" ]; then
   usage
@@ -164,7 +163,7 @@ shift
 
 case "$cmd" in
   url)
-    echo ${COMPOSE_URL:-http://${COMPOSE_DOMAIN}:$(docker_compose port reverse-proxy 80 | cut -d: -f2)}
+    echo http://${COMPOSE_DOMAIN}
     ;;
 
   open)
