@@ -56,7 +56,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=frontend"
-      - "traefik.http.routers.frontend.rule=Host(`${${COMPOSE_DOMAIN}}`)"
+      - "traefik.http.routers.${COMPOSE_DOMAIN}.rule=Host(`${${COMPOSE_DOMAIN}}`)"
 
   memcached:
     image: 'memcached:latest'
