@@ -2,10 +2,19 @@
 set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
 IFS=$'\n\t'
 
-script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+function find_script_dir {
+  local script=${BASH_SOURCE[0]}
+  local script_dir=$(cd $(dirname "${script}") && pwd)
+  if [ -L $script ]; then
+    # Symlink detected.
+    script_dir=$(dirname $(readlink $script));
+  fi
+
+  echo $script_dir
+}
+
+script_dir=$(find_script_dir)
 script_path=$script_dir/$(basename "${BASH_SOURCE[0]}")
-script_real_path=$(readlink /usr/local/bin/itkdev-docker-compose)
-script_real_path=$(dirname ${script_real_path})
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -50,10 +59,13 @@ Commands:
                 Display the exposed MariaDB SQL server port.
 
   traefik:start
-                Start træfik reserver proxy.
+                Start træfik reverse proxy.
 
   traefik:stop
-                Stop træfik reverser proxy
+                Stop træfik reverse proxy
+
+  traefik:url
+                URL for the administrative UI for træfik.
 
   traefik:open
                 Open the administrative UI for træfik.
@@ -153,13 +165,16 @@ if [ -z "${COMPOSE_PROJECT_NAME:-}" ]; then
   exit 1
 fi
 
-# Needs to be exported as it's used in docker-compose.yml and if not set in .env it will be the 
-# empty string, hence default to *.docker.localhost will not work.
 COMPOSE_DOMAIN=${COMPOSE_DOMAIN:-${COMPOSE_PROJECT_NAME}.docker.localhost}
 
 if [ "$#" == "0" ]; then
   usage
   exit 1
+fi
+
+# Check if traefik is running and print warning if not
+if [ ! "$(docker inspect -f '{{.State.Running}}' traefik)" == "true" ]; then
+  (>&2 echo "${bold}Traefik reverse proxy have not been started. Hostname will not be resolved to containers and not all commands will work correctly.${normal}")
 fi
 
 # Helper function to call `docker-compose` in the right context
@@ -250,20 +265,27 @@ EOF
 
   traefik:start)
     docker network inspect frontend >/dev/null 2>&1 || docker network create --driver=bridge --attachable --internal=false frontend
-    $(cd ${script_real_path}/../traefik/; docker-compose up -d)
+    $(cd ${script_dir}/../traefik/; docker-compose up -d)
     ;;
 
   traefik:stop)
-    $(cd ${script_real_path}/../traefik/; docker-compose down --volumes)
+    $(cd ${script_dir}/../traefik/; docker-compose down --volumes)
     ;;
 
   traefik:open)
-    open http://traefik.docker.localhost:8080;
+    open $($script_path traefik:url)
+    ;;
+
+  traefik:url)
+    label=$(docker inspect --format '{{ index .Config.Labels "traefik.http.routers.traefik.rule"}}' traefik)
+    url=$(echo "${label}" | sed -n 's/.*\`\(.*\)\`.*/\1/p')
+    echo http://${url}:8080;
     ;;
 
   mailhog:url)
     url=http://${COMPOSE_DOMAIN}:$(docker_compose port mailhog 8025 | cut -d: -f2)
-    echo $url;;
+    echo $url
+    ;;
 
   mailhog:open)
     open $(itkdev-docker-compose mailhog:url)

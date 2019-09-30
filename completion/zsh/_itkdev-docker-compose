@@ -35,9 +35,10 @@ _itkdev-docker-compose() {
               'sync\:files[Sync files base.]' \
               'sql\:connect[Print mysql command for connecting to database.]' \
               'sql\:port[Display the exposed MariaDB SQL server port.]' \
-              'traefik\:start[Start reverser proxy]' \
-              'traefik\:stop[Stop reverser proxy]' \
-              'traefik\:open[Open reverser proxy web-interface]' \
+              'traefik\:start[Start reverse proxy]' \
+              'traefik\:stop[Stop reverse proxy]' \
+              'traefik\:open[Open reverse proxy web-interface]' \
+              'traefik\:url[URL for the reverse proxy web-interface]' \
               'mailhog\:url[URL for the mailhog web-interface.]' \
               'mailhog\:open[Open mailhog url in default browser.]' \
               'xdebug[Boot the containers with PHP xdebug support enabled.]' \
