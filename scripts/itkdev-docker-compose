@@ -4,6 +4,8 @@ IFS=$'\n\t'
 
 script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 script_path=$script_dir/$(basename "${BASH_SOURCE[0]}")
+script_real_path=$(readlink /usr/local/bin/itkdev-docker-compose)
+script_real_path=$(dirname ${script_real_path})
 
 bold=$(tput bold)
 normal=$(tput sgr0)
@@ -46,6 +48,15 @@ Commands:
 
   sql:port
                 Display the exposed MariaDB SQL server port.
+
+  traefik:start
+                Start træfik reserver proxy.
+
+  traefik:stop
+                Stop træfik reverser proxy
+
+  traefik:open
+                Open the administrative UI for træfik.
 
   mailhog:url
                 URL for the mailhog web-interface.
@@ -235,6 +246,19 @@ EOF
 
   sql:port)
     docker_compose port mariadb 3306 | cut -d: -f2
+    ;;
+
+  traefik:start)
+    docker network inspect frontend >/dev/null 2>&1 || docker network create --driver=bridge --attachable --internal=false frontend
+    $(cd ${script_real_path}/../traefik/; docker-compose up -d)
+    ;;
+
+  traefik:stop)
+    $(cd ${script_real_path}/../traefik/; docker-compose down --volumes)
+    ;;
+
+  traefik:open)
+    open http://traefik.docker.localhost:8080;
     ;;
 
   mailhog:url)
