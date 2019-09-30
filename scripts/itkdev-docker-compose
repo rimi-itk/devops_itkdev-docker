@@ -155,7 +155,7 @@ fi
 
 # Needs to be exported as it's used in docker-compose.yml and if not set in .env it will be the 
 # empty string, hence default to *.docker.localhost will not work.
-export COMPOSE_DOMAIN=${COMPOSE_DOMAIN:-${COMPOSE_PROJECT_NAME}.docker.localhost}
+COMPOSE_DOMAIN=${COMPOSE_DOMAIN:-${COMPOSE_PROJECT_NAME}.docker.localhost}
 
 if [ "$#" == "0" ]; then
   usage
@@ -166,7 +166,7 @@ fi
 docker_compose () {
     # Note: Apparently, using --project-directory or --file options for `docker-compose` will break use of `$PWD` in
     # docker-compose.yml. Therefore, we `cd` before running `docker-compose` command.
-    (cd "$docker_compose_dir" && docker-compose "$@")
+    (cd "$docker_compose_dir" && COMPOSE_DOMAIN=${COMPOSE_DOMAIN} docker-compose "$@")
 }
 
 cmd="$1"
