@@ -173,7 +173,7 @@ if [ "$#" == "0" ]; then
 fi
 
 # Check if traefik is running and print warning if not
-if [ ! "$(docker inspect -f '{{.State.Running}}' traefik)" == "true" ]; then
+if [ ! "$(docker inspect -f '{{.State.Running}}' traefik 2>/dev/null)" == "true" ]; then
   (>&2 echo "${bold}Traefik reverse proxy has not been started. Hostname will not be resolved to containers and not all commands will work correctly.${normal}")
 fi
 
