@@ -2,7 +2,18 @@
 set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
 IFS=$'\n\t'
 
-script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+function find_script_dir {
+  local script=${BASH_SOURCE[0]}
+  local script_dir=$(cd $(dirname "${script}") && pwd)
+  if [ -L $script ]; then
+    # Symlink detected.
+    script_dir=$(dirname $(readlink $script));
+  fi
+
+  echo $script_dir
+}
+
+script_dir=$(find_script_dir)
 script_path=$script_dir/$(basename "${BASH_SOURCE[0]}")
 
 bold=$(tput bold)
@@ -47,6 +58,18 @@ Commands:
   sql:port
                 Display the exposed MariaDB SQL server port.
 
+  traefik:start
+                Start træfik reverse proxy.
+
+  traefik:stop
+                Stop træfik reverse proxy
+
+  traefik:url
+                URL for the administrative UI for træfik.
+
+  traefik:open
+                Open the administrative UI for træfik.
+
   mailhog:url
                 URL for the mailhog web-interface.
 
@@ -84,9 +107,6 @@ Configuration:
 
     COMPOSE_DOMAIN
                 The domain to use when generating urls
-
-    COMPOSE_URL
-                The url to use when generating urls
 
     REMOTE_HOST
                 Host used when pulling data from remove site
@@ -152,11 +172,16 @@ if [ "$#" == "0" ]; then
   exit 1
 fi
 
+# Check if traefik is running and print warning if not
+if [ ! "$(docker inspect -f '{{.State.Running}}' traefik 2>/dev/null)" == "true" ]; then
+  (>&2 echo "${bold}Traefik reverse proxy has not been started. Hostname will not be resolved to containers and not all commands will work correctly.${normal}")
+fi
+
 # Helper function to call `docker-compose` in the right context
 docker_compose () {
     # Note: Apparently, using --project-directory or --file options for `docker-compose` will break use of `$PWD` in
     # docker-compose.yml. Therefore, we `cd` before running `docker-compose` command.
-    (cd "$docker_compose_dir" && docker-compose "$@")
+    (cd "$docker_compose_dir" && COMPOSE_DOMAIN=${COMPOSE_DOMAIN} docker-compose "$@")
 }
 
 cmd="$1"
@@ -164,7 +189,7 @@ shift
 
 case "$cmd" in
   url)
-    echo ${COMPOSE_URL:-http://${COMPOSE_DOMAIN}:$(docker_compose port reverse-proxy 80 | cut -d: -f2)}
+    echo http://${COMPOSE_DOMAIN}
     ;;
 
   open)
@@ -238,9 +263,29 @@ EOF
     docker_compose port mariadb 3306 | cut -d: -f2
     ;;
 
+  traefik:start)
+    docker network inspect frontend >/dev/null 2>&1 || docker network create --driver=bridge --attachable --internal=false frontend
+    $(cd ${script_dir}/../traefik/; docker-compose up -d)
+    ;;
+
+  traefik:stop)
+    $(cd ${script_dir}/../traefik/; docker-compose down --volumes)
+    ;;
+
+  traefik:open)
+    open $($script_path traefik:url)
+    ;;
+
+  traefik:url)
+    label=$(docker inspect --format '{{ index .Config.Labels "traefik.http.routers.traefik.rule"}}' traefik)
+    url=$(echo "${label}" | sed -n 's/.*\`\(.*\)\`.*/\1/p')
+    echo http://${url}:8080;
+    ;;
+
   mailhog:url)
     url=http://${COMPOSE_DOMAIN}:$(docker_compose port mailhog 8025 | cut -d: -f2)
-    echo $url;;
+    echo $url
+    ;;
 
   mailhog:open)
     open $(itkdev-docker-compose mailhog:url)
