@@ -22,4 +22,4 @@ services:
       - $PWD/traefik.yml:/traefik.yml:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.docker.localhost`)"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.local.itkdev.dk`)"
