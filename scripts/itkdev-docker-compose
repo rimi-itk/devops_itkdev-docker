@@ -16,6 +16,94 @@ function find_script_dir {
 script_dir=$(find_script_dir)
 script_path=$script_dir/$(basename "${BASH_SOURCE[0]}")
 
+function template_install {
+  local force=0
+  local list=0
+  local name=""
+
+  for var in "$@"
+  do
+    case "$var" in
+      --force)
+        force=1
+        ;;
+      --list)
+        list=1
+        ;;
+      *)
+        name="$var"
+        ;;
+    esac
+  done
+
+  local templates_dir=$script_dir/../templates
+  local source_dir=$templates_dir/$name/
+  local target_dir=$PWD
+
+  if [ "$list" -eq 1 ]; then
+    echo Templates:
+    for name in $templates_dir/*; do
+      echo "  $(basename $name)"
+    done
+    exit 0
+  fi
+
+  if [ -z "$name" ]; then
+    (>&2 echo "${bold}Missing template name${normal}")
+    exit 1
+  fi
+  if [ ! -d $source_dir ]; then
+    (>&2 echo "${bold}Invalid template name: $name (use --list to show valid template names)${normal}")
+    exit 1
+  fi
+
+  if [ "$force" -ne 1 ]; then
+    if [ -e $target_dir/docker-compose.yml ]; then
+      (>&2 echo "${bold}Target $target_dir/docker-compose.yml already exists (use --force to overwrite)${normal}")
+      exit 1
+    fi
+    if [ -e $target_dir/.docker ]; then
+      (>&2 echo "${bold}Target $target_dir/.docker already exists (use --force to overwrite)${normal}")
+      exit 1
+    fi
+  fi
+
+  read -p "Are you sure you want to install the $name template in $target_dir (y|N)? " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+     exit
+  fi
+
+  echo "${bold}Installing $name template${normal}"
+  rsync --archive $source_dir $target_dir
+
+  local project_name_default=$(basename $target_dir)
+
+  # Help user set up a .env file
+  if [ ! -e $target_dir/.env ]; then
+    local project_name
+    local domain
+    read -p "Project name ($project_name_default)? " -e project_name
+    if [ -z "$project_name" ]; then
+      project_name=$project_name_default
+    fi
+    read -p "Domain (optional)? " -e domain
+    cat > $target_dir/.env <<EOF
+COMPOSE_PROJECT_NAME=$project_name
+COMPOSE_DOMAIN=$domain
+EOF
+  else
+cat <<EOF
+
+${bold}Edit .env and make sure that COMPOSE_PROJECT_NAME and, optionally, COMPOSE_DOMAIN is set${normal}, e.g.
+
+COMPOSE_PROJECT_NAME=$project_name_default
+COMPOSE_DOMAIN=$project_name_default.local.computer
+
+EOF
+  fi
+}
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -57,6 +145,10 @@ Commands:
 
   sql:port
                 Display the exposed MariaDB SQL server port.
+
+  template:install name [--force] [--list]
+                Install a named docker-composer template in the current
+                directory.
 
   traefik:start
                 Start træfik reverse proxy.
@@ -129,6 +221,14 @@ Configuration:
 
 EOF
 }
+
+# template:install must be run before we check for existence of
+# docker-compose.yml.
+if [[ "$#" -gt "0" && "$1" == "template:install" ]]; then
+  shift
+  template_install "$@"
+  exit
+fi
 
 # @see https://unix.stackexchange.com/questions/13464/is-there-a-way-to-find-a-file-in-an-inverse-recursive-search/13474
 upsearch () {
