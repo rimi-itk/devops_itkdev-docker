@@ -68,6 +68,12 @@ function template_install {
     fi
   fi
 
+  read -p "Are you sure you want to install the $name template in $target_dir (y|N)? " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+     exit
+  fi
+
   echo "${bold}Installing $name template${normal}"
   rsync --archive $source_dir $target_dir
 
