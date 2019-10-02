@@ -87,7 +87,7 @@ function template_install {
     if [ -z "$project_name" ]; then
       project_name=$project_name_default
     fi
-    read -p "Domain? " -e domain
+    read -p "Domain (optional)? " -e domain
     cat > $target_dir/.env <<EOF
 COMPOSE_PROJECT_NAME=$project_name
 COMPOSE_DOMAIN=$domain
