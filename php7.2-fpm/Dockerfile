@@ -30,6 +30,8 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-dev \
     php${PHP_VERSION}-xdebug \
     php${PHP_VERSION}-intl \
+    php${PHP_VERSION}-bcmath \
+    php-imagick \
     php-memcached \
     php-pear \
     libmcrypt-dev \
