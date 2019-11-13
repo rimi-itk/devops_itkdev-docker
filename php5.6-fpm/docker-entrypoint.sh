@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  
+set -e
 
 # Add docker host domain to hosts file
 if [ ! -z "${DOCKER_HOST_DOMAIN}" ]; then

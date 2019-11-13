@@ -8,7 +8,7 @@ RUN apt-get update
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     apt-utils
-    
+
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     php${PHP_VERSION} \

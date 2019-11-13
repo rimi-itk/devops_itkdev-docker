@@ -1,4 +1,3 @@
-
 FROM mariadb:10.3
 MAINTAINER ITK dev <itkdev@mkb.aarhus.dk>
 

@@ -1,4 +1,3 @@
-
 FROM itkdev/php7.0-fpm
 MAINTAINER ITK dev <itkdev@mkb.aarhus.dk>
 

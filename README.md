@@ -156,4 +156,4 @@ docker build --tag=itkdev/php7.2-fpm .
 docker push itkdev/php7.2-fpm
 ```
 
-# !!!! Don't use iPhone hotspot. It wrecks everything, costs hours of debugging and ruins your day !!!!  
+# !!!! Don't use iPhone hotspot. It wrecks everything, costs hours of debugging and ruins your day !!!!
