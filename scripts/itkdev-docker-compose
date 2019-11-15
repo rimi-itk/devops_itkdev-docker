@@ -177,6 +177,9 @@ Commands:
   images:pull
                 Update/pull all docker images.
 
+  shell [service name]
+                Enter into /usr/bin/env sh inside container. E.g. itkdev-docker-compose shell phpfpm
+
   composer
                 Run composer command inside phpfpm container
 
@@ -467,6 +470,10 @@ EOF
 
   down)
     docker_compose down --volumes --remove-orphans
+    ;;
+
+  shell)
+    docker_compose exec "$@" /usr/bin/env sh
     ;;
 
   --help)
