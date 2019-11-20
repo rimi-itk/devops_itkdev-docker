@@ -113,10 +113,10 @@ Usage: itkdev-docker-compose command [command arguments]
 
 Commands:
 
-  url
-                Print url to site
+  url [service [port]]
+                Print url to site or a service
 
-  open
+  open [service [port]]
                 Open url in default browser
 
   drush
@@ -289,11 +289,31 @@ shift
 
 case "$cmd" in
   url)
-    echo http://${COMPOSE_DOMAIN}
+    domain=${COMPOSE_DOMAIN}
+    if [ "$#" -gt 0 ]; then
+      service="$1"
+      port=80
+
+      shift
+      if [ "$#" -gt 0 ]; then
+        port="$1"
+        shift
+      fi
+
+      domain=$(docker_compose port $service $port)
+      if [ $? -ne 0 ]; then
+        exit 1
+      elif [ -z "$domain" ]; then
+        (>&2 echo "Cannot find domain for service $service (port: $port)")
+        exit 1
+      fi
+    fi
+
+    echo http://$domain
     ;;
 
   open)
-    open $($script_path url)
+    open $($script_path url "$@")
     ;;
 
   sync)
