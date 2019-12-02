@@ -17,7 +17,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     libfcgi-perl \
     perl \
-    fcgiwrap \  
+    fcgiwrap \
     wget \
     build-essential \
     autoconf \
@@ -43,7 +43,7 @@ RUN PERL_MM_USE_DEFAULT=1 \
   Email::Simple \
   Email::Simple::Creator \
   Encode \
-  Exporter \ 
+  Exporter \
   File::Basename \
   File::Path \
   File::Temp \
@@ -71,7 +71,7 @@ RUN PERL_MM_USE_DEFAULT=1 \
   XML::LibXML \
   XML::LibXML::XPathContext \
   XML::Simple \
-  DBD::mysql 
+  DBD::mysql
 
 # Add mhsendmail for mailhog
 ADD https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 /usr/local/bin/mhsendmail

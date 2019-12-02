@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e  
+set -e
 
 ## Run templates with configuration.
 /usr/local/bin/confd --onetime --backend env --confdir /etc/confd

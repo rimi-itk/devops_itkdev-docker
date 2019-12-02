@@ -6,7 +6,7 @@ networks:
   app:
     driver: bridge
     internal: false
-    
+
 services:
   mariadb:
     image: ding2/ding2-mysql
@@ -84,7 +84,7 @@ services:
     volumes:
       - drush-cache:/root/.drush
       - ./:/app
-  
+
   node:
     image: node:6
     networks:
