@@ -41,6 +41,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-intl \
     php${PHP_VERSION}-bcmath \
     php-imagick \
+    php-apcu \
     php-memcached \
     php-redis \
     mysql-client \

@@ -35,6 +35,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php-imagick \
     php-memcached \
     php-pear \
+    php-apcu \
     libmcrypt-dev \
     libreadline-dev \
     mysql-client \

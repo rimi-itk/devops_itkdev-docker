@@ -31,6 +31,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-intl \
     php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-sqlite3 \
+    php-apcu \
     php-imagick \
     php-xdebug \
     php-pear \
