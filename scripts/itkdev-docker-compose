@@ -125,6 +125,9 @@ Commands:
                 container. Otherwise, the drush container is used to
                 run the command.
 
+  drupal
+                Run drupal cli installed via composer.
+
   sync
                 Sync both database and files.
 
@@ -477,6 +480,16 @@ EOF
       docker_compose exec phpfpm /app/vendor/bin/drush --root=$root "$@"
     else
       docker_compose run --rm drush --root=$root "$@"
+    fi
+    ;;
+
+  drupal)
+    root=/app
+    if [ -d $docker_compose_dir/web ]; then
+      root=/app/web
+    fi
+    if [ -e $docker_compose_dir/vendor/bin/drupal ]; then
+      docker_compose exec phpfpm /app/vendor/bin/drupal --root=$root "$@"
     fi
     ;;
 
