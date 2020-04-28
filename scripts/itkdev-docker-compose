@@ -320,8 +320,8 @@ case "$cmd" in
     ;;
 
   sync)
-    itkdev-docker-compose sync:db
-    itkdev-docker-compose sync:files
+    $script_path sync:db
+    $script_path sync:files
     ;;
 
   sync:db)
@@ -335,7 +335,7 @@ case "$cmd" in
     fi
 
     if command -v pv >/dev/null 2>&1; then
-      ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | pv | eval $(itkdev-docker-compose sql:connect)
+      ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | pv | eval $($script_path sql:connect)
     else
       cat <<EOF
 Protip: run
@@ -344,7 +344,7 @@ Protip: run
 
 to show progress
 EOF
-      ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
+      ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $($script_path sql:connect)
     fi
     ;;
 
@@ -411,7 +411,7 @@ EOF
     ;;
 
   mailhog:open)
-    open $(itkdev-docker-compose mailhog:url)
+    open $($script_path mailhog:url)
     ;;
 
   xdebug)
