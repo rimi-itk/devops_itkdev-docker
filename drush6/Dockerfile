@@ -13,6 +13,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
 # Install Drush using Composer.
 RUN composer global require drush/drush:"$DRUSH_VERSION" --prefer-dist
 
+# Add registry_rebuild module.
+RUN /root/.composer/vendor/bin/drush dl registry_rebuild
+
 # Display which version of Drush was installed
 RUN /root/.composer/vendor/bin/drush --version
 
