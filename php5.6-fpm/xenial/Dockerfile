@@ -1,5 +1,5 @@
 FROM ubuntu:16.04
-LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
+LABEL maintainer="ITK Dev <itkdev@mkb.aarhus.dk>"
 
 ENV PHP_VERSION 5.6
 
