@@ -143,6 +143,9 @@ Commands:
                 Use `$(itkdev-docker-compose sql:connect)` to open the
                 database cli.
 
+  sql:open
+                Open database GUI and connect to MariaDB.
+
   sql:port
                 Display the exposed MariaDB SQL server port.
 
@@ -380,6 +383,14 @@ EOF
     host=$(echo $address | cut -d: -f1)
     port=$(echo $address | cut -d: -f2)
     echo mysql --host=$host --port=$port --user=db --password=db db
+    ;;
+
+  sql:open)
+    address=$(docker_compose port mariadb 3306)
+    host=$(echo $address | cut -d: -f1)
+    port=$(echo $address | cut -d: -f2)
+    echo open mariadb://db:db@$host:$port/db
+    open mariadb://db:db@$host:$port/db
     ;;
 
   sql:port)
