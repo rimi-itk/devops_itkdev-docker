@@ -35,6 +35,7 @@ _itkdev-docker-compose() {
               'sync\:files[Sync files base.]' \
               'sql\:connect[Print mysql command for connecting to database.]' \
               'sql\:port[Display the exposed MariaDB SQL server port.]' \
+              'sql\:open[Open default SQL UI.]' \
               'template\:install[Install template]' \
               'traefik\:start[Start reverse proxy]' \
               'traefik\:stop[Stop reverse proxy]' \
