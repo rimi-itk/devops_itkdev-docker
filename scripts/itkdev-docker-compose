@@ -132,6 +132,9 @@ Commands:
                 Sync database base on 'REMOTE_DB_DUMP_CMD' in the env
                 file.
 
+                If 'SYNC_DB_POST_SCRIPT' is set, it will be eval'ed after
+                importing the remote database.
+
   sync:files
                 Sync files base on 'REMOTE_PATH' or 'LOCAL_PATH' in
                 the env file.
@@ -348,6 +351,10 @@ Protip: run
 to show progress
 EOF
       ssh ${REMOTE_HOST} ${REMOTE_DB_DUMP_CMD} | eval $(itkdev-docker-compose sql:connect)
+    fi
+
+    if [ ! -z "${SYNC_DB_POST_SCRIPT:-}" ]; then
+      eval "${SYNC_DB_POST_SCRIPT}"
     fi
     ;;
 
