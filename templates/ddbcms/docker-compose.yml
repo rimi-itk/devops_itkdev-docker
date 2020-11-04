@@ -12,6 +12,7 @@ services:
     image: ding2/ding2-mysql
     networks:
       - app
+      - frontend
     ports:
       - '3306'
     environment:
