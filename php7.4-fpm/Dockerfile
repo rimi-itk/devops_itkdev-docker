@@ -80,6 +80,9 @@ RUN chmod 755 /usr/local/bin/composer1 \
 && chmod 755 /usr/local/bin/composer2 \
 && composer2 self-update --stable
 
+# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+RUN ln -fs /usr/local/bin/composer1 /usr/local/bin/composer
+
 # Add mhsendmail for mailhog
 ADD https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
 RUN chmod +x /usr/local/bin/mhsendmail
