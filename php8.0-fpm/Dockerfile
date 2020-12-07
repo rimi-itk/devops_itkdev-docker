@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
 
 ENV PHP_VERSION 8.0
