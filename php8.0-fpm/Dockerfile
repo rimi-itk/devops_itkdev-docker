@@ -59,7 +59,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
     imagemagick \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir /var/run/php/
 COPY etc/ /etc/
 
 # Configure php
