@@ -44,3 +44,5 @@ $conf['memcache_bins'] = array(
   'cache' => 'default',
 );
 $conf['memcache_log_data_pieces'] = 10;
+
+$conf['samesite_cookie_attribute_value'] = '';
