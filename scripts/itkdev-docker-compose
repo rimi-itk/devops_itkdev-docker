@@ -98,7 +98,7 @@ cat <<EOF
 ${bold}Edit .env and make sure that COMPOSE_PROJECT_NAME and, optionally, COMPOSE_DOMAIN is set${normal}, e.g.
 
 COMPOSE_PROJECT_NAME=$project_name_default
-COMPOSE_DOMAIN=$project_name_default.local.computer
+COMPOSE_DOMAIN=$project_name_default.local.itkdev.dk
 
 EOF
   fi
