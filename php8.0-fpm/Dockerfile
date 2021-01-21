@@ -10,16 +10,18 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     apt-utils
 
-RUN apt-get install -y language-pack-en-base \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y language-pack-en-base \
     software-properties-common \
 && locale-gen en_US.UTF-8
 
 # Add php repositories
-RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php \
+RUN DEBIAN_FRONTEND=noninteractive LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php \
 && apt-get update
 
 # Clean up
-RUN apt-get remove -y software-properties-common language-pack-en-base \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get remove -y software-properties-common language-pack-en-base \
 && apt-get autoremove -y
 
 RUN DEBIAN_FRONTEND=noninteractive \

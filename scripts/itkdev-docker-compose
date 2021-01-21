@@ -426,10 +426,48 @@ EOF
     ;;
 
   xdebug)
+    echo "Deprecated command use xdebug2 (PHP =< 7.2) or xdebug3 (PHP >= 7.3)"
+    ;;
+
+  xdebug2)
     PHP_XDEBUG=1 \
     PHP_XDEBUG_REMOTE_AUTOSTART=1 \
-    PHP_XDEBUG_REMOTE_PORT=9000 \
-    PHP_XDEBUG_REMOTE_CONNECT_BACK=0 \
+    docker_compose up -d
+
+    cat <<'EOF' | sed "s|«project directory»|$PWD|"
+
+================================================================================
+
+To debug from the command line, add `PHP_IDE_CONFIG=serverName=localhost` to the
+`phpfpm` environment:
+
+# docker-compose.yml
+phpfpm:
+    image: itkdev/php7.2-fpm:latest
+    environment:
+      …
+      - PHP_IDE_CONFIG=serverName=localhost
+
+and define "localhost" as a server in PhpStorm (Preferences > Languages &
+Frameworks > PHP > Servers):
+
+Name: localhost
+Host: localhost
+Path mapping: «project directory» → /app
+
+You may also want to uncheck "Force break at first line when no path mapping
+specified" and/or "Force break at first line when a script is outside the
+project" in PhpStorm (Preferences > Languages & Frameworks > PHP > Debug).
+
+================================================================================
+
+EOF
+    ;;
+
+  xdebug3)
+    XDEBUG_MODE=debug \
+    XDEBUG_SESSION=1 \
+    XDEBUG_CONFIG="client_host=host.docker.internal start_with_request=yes" \
     docker_compose up -d
 
     cat <<'EOF' | sed "s|«project directory»|$PWD|"

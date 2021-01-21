@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
 
 ENV PHP_VERSION 7.3
@@ -10,12 +10,13 @@ RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     apt-utils
 
-RUN apt-get install -y language-pack-en-base \
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y language-pack-en-base \
     software-properties-common \
 && locale-gen en_US.UTF-8
 
 # Add php repositories
-RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php \
+RUN DEBIAN_FRONTEND=noninteractive LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php \
 && apt-get update
 
 # Clean up
@@ -59,7 +60,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
     imagemagick \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir /var/run/php/
 COPY etc/ /etc/
 
 # Configure php
