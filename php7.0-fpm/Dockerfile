@@ -54,10 +54,17 @@ RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/
 && sed -i '/upload_max_filesize = 2M/c upload_max_filesize = 16M' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/post_max_size = 8M/c post_max_size = 20M' /etc/php/${PHP_VERSION}/fpm/php.ini
 
-# Install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN php -r "unlink('composer-setup.php');"
+# Install composer (both composer version as set symlink to right version in entry-point)
+ADD https://getcomposer.org/composer.phar /usr/local/bin/composer1
+ADD https://getcomposer.org/composer.phar /usr/local/bin/composer2
+RUN chmod 755 /usr/local/bin/composer1 \
+&& composer1 self-update --1 \
+&& composer1 self-update --stable \
+&& chmod 755 /usr/local/bin/composer2 \
+&& composer2 self-update --stable
+
+# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+RUN ln -fs /usr/local/bin/composer1 /usr/local/bin/composer
 
 # Add mhsendmail for mailhog
 ADD https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
