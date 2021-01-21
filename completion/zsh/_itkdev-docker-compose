@@ -43,7 +43,9 @@ _itkdev-docker-compose() {
               'traefik\:url[URL for the reverse proxy web-interface]' \
               'mailhog\:url[URL for the mailhog web-interface.]' \
               'mailhog\:open[Open mailhog url in default browser.]' \
-              'xdebug[Boot the containers with PHP xdebug support enabled.]' \
+              'xdebug[Deprecated command use xdebug2 (PHP =< 7.2) or xdebug3 (PHP >= 7.3).]' \
+              'xdebug2[Boot the containers with PHP xdebug support enabled (PHP =< 7.2).]' \
+              'xdebug3[Boot the containers with PHP xdebug support enabled (PHP >= 7.3).]' \
               'hosts\:insert[Insert the docker site url into the hosts file.]' \
               'images\:pull[Update/pull all docker images.]' \
               'composer[Run composer command inside phpfpm container.]' \
