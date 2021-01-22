@@ -18,5 +18,5 @@ else
 fi
 
 ## Start the php FPM process.
-echo "Starting PHP 5.6 FPM"
+echo "Starting PHP 7.3 FPM"
 /usr/local/bin/docker-php-entrypoint php-fpm

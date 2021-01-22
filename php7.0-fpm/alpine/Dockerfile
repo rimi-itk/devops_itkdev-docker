@@ -1,4 +1,4 @@
-FROM php:5.6-fpm-alpine
+FROM php:7.0-fpm-alpine
 LABEL maintainer="ITK Dev <itkdev@mkb.aarhus.dk>"
 
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
@@ -34,8 +34,7 @@ RUN apk --update add --no-cache \
         gettext \
         intl \
         ldap \
-        mcrypt \
-        mysql \
+        pdo_mysql \
         mysqli \
         opcache \
         pdo_mysql \
@@ -71,3 +70,4 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 CMD [ "docker-entrypoint.sh" ]
+
