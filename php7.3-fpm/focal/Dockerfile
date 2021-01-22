@@ -1,13 +1,27 @@
-FROM ubuntu:16.04
-LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
+FROM ubuntu:20.04
+LABEL maintainer="ITK Dev <itkdev@mkb.aarhus.dk>"
 
-ENV PHP_VERSION 7.0
+ENV PHP_VERSION 7.3
 
+# Ensure packages are avaiable.
 RUN apt-get update
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
     apt-utils
+
+RUN DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y language-pack-en-base \
+    software-properties-common \
+&& locale-gen en_US.UTF-8
+
+# Add php repositories
+RUN DEBIAN_FRONTEND=noninteractive LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php \
+&& apt-get update
+
+# Clean up
+RUN apt-get remove -y software-properties-common language-pack-en-base \
+&& apt-get autoremove -y
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
@@ -20,7 +34,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-gd \
     php${PHP_VERSION}-json \
     php${PHP_VERSION}-mbstring \
-    php${PHP_VERSION}-mcrypt \
     php${PHP_VERSION}-mysql \
     php${PHP_VERSION}-opcache \
     php${PHP_VERSION}-readline \
@@ -28,36 +41,50 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xml \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
+    php${PHP_VERSION}-dev \
+    php${PHP_VERSION}-xdebug \
     php${PHP_VERSION}-intl \
     php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-sqlite3 \
-    php-apcu \
+    php-amqp \
     php-imagick \
-    php-xdebug \
-    php-pear \
     php-memcached \
+    php-pear \
+    php-apcu \
+    php-mongodb \
+    libmcrypt-dev \
+    libreadline-dev \
     mysql-client \
     unzip \
     git \
     imagemagick \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir /var/run/php/
 COPY etc/ /etc/
 
 # Configure php
-RUN yes '' | pecl install redis-4.3.0
-RUN /usr/sbin/phpenmod redis
+RUN pecl install mcrypt-1.0.2 \
+&& /usr/sbin/phpenmod mcrypt
+
+RUN yes '' | pecl install redis-4.3.0 \
+&& /usr/sbin/phpenmod redis
 
 RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/;date.timezone =/c date.timezone = Europe\/Copenhagen' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/upload_max_filesize = 2M/c upload_max_filesize = 16M' /etc/php/${PHP_VERSION}/fpm/php.ini \
 && sed -i '/post_max_size = 8M/c post_max_size = 20M' /etc/php/${PHP_VERSION}/fpm/php.ini
 
-# Install composer
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-RUN php -r "unlink('composer-setup.php');"
+# Install composer (both composer version as set symlink to right version in entry-point)
+ADD https://getcomposer.org/composer.phar /usr/local/bin/composer1
+ADD https://getcomposer.org/composer.phar /usr/local/bin/composer2
+RUN chmod 755 /usr/local/bin/composer1 \
+&& composer1 self-update --1 \
+&& composer1 self-update --stable \
+&& chmod 755 /usr/local/bin/composer2 \
+&& composer2 self-update --stable
+
+# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+RUN ln -fs /usr/local/bin/composer1 /usr/local/bin/composer
 
 # Add mhsendmail for mailhog
 ADD https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 /usr/local/bin/mhsendmail

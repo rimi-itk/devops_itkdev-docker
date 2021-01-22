@@ -1,4 +1,4 @@
-FROM php:5.6-fpm-alpine
+FROM php:8.0-fpm-alpine
 LABEL maintainer="ITK Dev <itkdev@mkb.aarhus.dk>"
 
 ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
@@ -36,8 +36,7 @@ RUN apk --update add --no-cache \
         gettext \
         intl \
         ldap \
-        mcrypt \
-        mysql \
+        pdo_mysql \
         mysqli \
         opcache \
         pdo_mysql \
@@ -47,7 +46,7 @@ RUN apk --update add --no-cache \
         zip
 
 RUN apk --update add --no-cache --virtual .build-deps autoconf g++ make \
-    && pecl install redis-4.0.1 \
+    && pecl install redis \
     && docker-php-ext-enable redis \
     && apk del .build-deps
 
@@ -73,3 +72,4 @@ COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 CMD [ "docker-entrypoint.sh" ]
+
