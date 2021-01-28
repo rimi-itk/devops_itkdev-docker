@@ -18,7 +18,9 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
     PHP_PM_MIN_SPARE_SERVERS="5" \
     PHP_PM_MAX_SPARE_SERVERS="8" \
     PHP_REQUEST_SLOWLOG_TIMEOUT="0" \
-    PHP_SLOWLOG="/var/log/php-slow.log"
+    PHP_SLOWLOG="/var/log/php-slow.log" \
+    PHP_USER="deploy" \
+    PHP_GROUP="deploy"
 
 RUN apk --update add --no-cache \
         libxslt-dev \
@@ -63,6 +65,10 @@ COPY etc/php/conf.d/php.ini /usr/local/etc/php/conf.d/20-php.ini
 
 # Custom FPM configuration.
 COPY etc/php-fpm.d/fpm.ini /usr/local/etc/php-fpm.d/zz-fpm-docker.conf
+
+# Add deploy use to match server.
+RUN addgroup -g 1001 deploy \
+&& adduser -G deploy -u 1001 -H deploy -D
 
 EXPOSE 9000
 
