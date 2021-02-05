@@ -467,7 +467,6 @@ EOF
   xdebug3)
     XDEBUG_MODE=debug \
     XDEBUG_SESSION=1 \
-    XDEBUG_CONFIG="client_host=host.docker.internal start_with_request=yes" \
     docker_compose up -d
 
     cat <<'EOF' | sed "s|«project directory»|$PWD|"

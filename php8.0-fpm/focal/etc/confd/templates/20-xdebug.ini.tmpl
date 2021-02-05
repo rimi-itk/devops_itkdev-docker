@@ -2,6 +2,11 @@
 {{ if ne $mode "off"}}
 zend_extension=xdebug.so
 xdebug.max_nesting_level = {{ getenv "XDEBUG_MAX_NESTING_LEVEL" "256" }}
+{{$session := getenv "XDEBUG_SESSION" }}
+{{ if eq $session "1" }}
+xdebug.client_host = {{ getenv "XDEBUG_CLIENT_HOST" "host.docker.internal" }}
+xdebug.start_with_request = {{ getenv "XDEBUG_WITH_REQUEST" "yes" }}
+{{ end }}
 
 {{ if eq $mode "profile"}}
 xdebug.profiler_append = {{ getenv "XDEBUG_PROFILER_APPEND" "0" }}
