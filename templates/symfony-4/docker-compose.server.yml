@@ -14,12 +14,12 @@ services:
     restart: unless-stopped
     networks:
       - app
+      - frontend
     environment:
       - PHP_MAX_EXECUTION_TIME=30
       - PHP_MEMORY_LIMIT=128M
     volumes:
       - .:/app:delegated
-      - drush-cache:/root/.drush
 
   nginx:
     image: nginx:stable-alpine
@@ -37,10 +37,10 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.rule=Host(`${COMPOSE_SERVER_DOMAIN}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.entrypoints=web"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
       - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${COMPOSE_SERVER_DOMAIN}`)"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure"
-      #- "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=ITKBasicAuth@file"
-
-# Drush cache volume to persist cache between runs.
-volumes:
-  drush-cache:
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=websecure"     
+       #- "traefik.http.routers.${COMPOSE_PROJECT_NAME}.middlewares=ITKBasicAuth@file"
