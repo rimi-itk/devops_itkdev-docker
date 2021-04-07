@@ -17,6 +17,7 @@ services:
     environment:
       - PHP_MAX_EXECUTION_TIME=30
       - PHP_MEMORY_LIMIT=128M
+      - COMPOSER_VERSION=1
     depends_on:
       - memcached
     volumes:
@@ -59,8 +60,6 @@ services:
     image: itkdev/drush6:latest
     networks:
       - app
-    depends_on:
-      - mariadb
     entrypoint:
       - drush
     volumes:

@@ -60,8 +60,6 @@ services:
     image: itkdev/drush6:latest
     networks:
       - app
-    depends_on:
-      - mariadb
     entrypoint:
       - drush
     volumes:
