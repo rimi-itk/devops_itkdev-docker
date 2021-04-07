@@ -68,13 +68,9 @@ RUN yes '' | pecl install redis-4.3.0 \
 && /usr/sbin/phpenmod redis
 
 # Install composer (both composer version as set symlink to right version in entry-point)
-ADD https://getcomposer.org/composer.phar /usr/local/bin/composer1
-ADD https://getcomposer.org/composer.phar /usr/local/bin/composer2
-RUN chmod 755 /usr/local/bin/composer1 \
-&& composer1 self-update --1 \
-&& composer1 self-update --stable \
-&& chmod 755 /usr/local/bin/composer2 \
-&& composer2 self-update --stable
+# Install composer (both composer version as set symlink to right version in entry-point)
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
 
 # Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
 RUN ln -fs /usr/local/bin/composer1 /usr/local/bin/composer
