@@ -1,7 +1,8 @@
 FROM php:7.4-fpm-alpine
 LABEL maintainer="ITK Dev <itkdev@mkb.aarhus.dk>"
 
-ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
+ENV PHP_OPCACHE_ENABLED="1" \
+    PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
     PHP_OPCACHE_MAX_ACCELERATED_FILES="20000" \
     PHP_OPCACHE_MEMORY_CONSUMPTION="64" \
     PHP_OPCACHE_MAX_WASTED_PERCENTAGE="10" \
@@ -51,6 +52,13 @@ RUN apk --update add --no-cache --virtual .build-deps autoconf g++ make \
     && pecl install redis-4.0.1 \
     && docker-php-ext-enable redis \
     && apk del .build-deps
+
+# Install composer (both composer version as set symlink to right version in entry-point)
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
+
+# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+RUN ln -fs /usr/bin/composer1 /usr/local/bin/composer
 
 # Added cache tool.
 ADD https://gordalina.github.io/cachetool/downloads/cachetool.phar /usr/local/bin/cachetool

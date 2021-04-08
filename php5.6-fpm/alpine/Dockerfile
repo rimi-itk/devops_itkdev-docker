@@ -53,6 +53,13 @@ RUN apk --update add --no-cache --virtual .build-deps autoconf g++ make \
     && docker-php-ext-enable redis \
     && apk del .build-deps
 
+# Install composer (both composer version as set symlink to right version in entry-point)
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
+
+# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+RUN ln -fs /usr/bin/composer1 /usr/local/bin/composer
+
 # Added cache tool.
 ADD https://gordalina.github.io/cachetool/downloads/cachetool.phar /usr/local/bin/cachetool
 RUN chmod +x /usr/local/bin/cachetool
