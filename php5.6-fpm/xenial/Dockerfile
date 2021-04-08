@@ -63,7 +63,7 @@ COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
 
 # Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
-RUN ln -fs /usr/local/bin/composer1 /usr/local/bin/composer
+RUN ln -fs /usr/bin/composer1 /usr/local/bin/composer
 
 # Add mhsendmail for mailhog
 ADD https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
