@@ -389,8 +389,8 @@ EOF
     address=$(docker_compose port mariadb 3306)
     host=$(echo $address | cut -d: -f1)
     port=$(echo $address | cut -d: -f2)
-    echo open mariadb://db:db@$host:$port/db
-    open mariadb://db:db@$host:$port/db
+    echo open mariadb://db:db@$host:$port/db?statusColor=F8F8F8\&enviroment=local\&name=${COMPOSE_DOMAIN}
+    open mariadb://db:db@$host:$port/db?statusColor=F8F8F8\&enviroment=local\&name=${COMPOSE_DOMAIN}
     ;;
 
   sql:port)
