@@ -47,11 +47,11 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-intl \
     php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-sqlite3 \
+    php${PHP_VERSION}-apcu \
     php-amqp \
     php-imagick \
     php-memcached \
     php-pear \
-    php-apcu \
     php-mongodb \
     libmcrypt-dev \
     libreadline-dev \
