@@ -287,7 +287,7 @@ fi
 docker_compose () {
     # Note: Apparently, using --project-directory or --file options for `docker-compose` will break use of `$PWD` in
     # docker-compose.yml. Therefore, we `cd` before running `docker-compose` command.
-    (cd "$docker_compose_dir" && COMPOSE_DOMAIN=${COMPOSE_DOMAIN} docker-compose "$@")
+    (cd "$docker_compose_dir" && COMPOSE_DOMAIN=${COMPOSE_DOMAIN} docker compose "$@")
 }
 
 cmd="$1"
@@ -399,11 +399,11 @@ EOF
 
   traefik:start)
     docker network inspect frontend >/dev/null 2>&1 || docker network create --driver=bridge --attachable --internal=false frontend
-    $(cd ${script_dir}/../traefik/; docker-compose up -d)
+    $(cd ${script_dir}/../traefik/; docker compose up -d)
     ;;
 
   traefik:stop)
-    $(cd ${script_dir}/../traefik/; docker-compose down --volumes)
+    $(cd ${script_dir}/../traefik/; docker compose down --volumes)
     ;;
 
   traefik:open)
