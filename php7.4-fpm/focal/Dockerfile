@@ -48,9 +48,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-sqlite3 \
     php${PHP_VERSION}-apcu \
+    php${PHP_VERSION}-memcached \
     php-amqp \
     php-imagick \
-    php-memcached \
     php-pear \
     php-mongodb \
     libmcrypt-dev \
