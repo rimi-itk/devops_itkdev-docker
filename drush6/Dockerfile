@@ -21,4 +21,6 @@ RUN /root/.composer/vendor/bin/drush --version
 
 ENV PATH="/root/.composer/vendor/bin/:${PATH}"
 
+WORKDIR /app
+
 ENTRYPOINT ["drush"]

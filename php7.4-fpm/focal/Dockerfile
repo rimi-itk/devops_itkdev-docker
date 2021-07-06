@@ -49,10 +49,10 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-sqlite3 \
     php${PHP_VERSION}-apcu \
     php${PHP_VERSION}-memcached \
-    php-amqp \
-    php-imagick \
+    php${PHP_VERSION}-amqp \
+    php${PHP_VERSION}-imagick \
+    php${PHP_VERSION}-mongodb \
     php-pear \
-    php-mongodb \
     libmcrypt-dev \
     libreadline-dev \
     mysql-client \
