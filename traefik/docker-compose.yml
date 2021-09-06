@@ -7,7 +7,7 @@ networks:
     
 services:
   traefik:
-    image: traefik:v2.3
+    image: traefik:v2.5
     container_name: traefik
     restart: unless-stopped
     security_opt:
@@ -17,9 +17,12 @@ services:
     ports:
       - 80:80
       - 8080:8080
+      - 443:443
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $PWD/traefik.yml:/traefik.yml:ro
+      - $PWD/dynamic-conf.yaml:/config/dynamic-conf.yaml:ro
+      - $PWD/ssl:/certs:ro
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.rule=Host(`traefik.local.itkdev.dk`)"
