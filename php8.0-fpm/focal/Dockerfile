@@ -8,7 +8,8 @@ RUN apt-get update
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
-    apt-utils
+    apt-utils \
+    iputils-ping
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y language-pack-en-base \
