@@ -10,7 +10,7 @@ on:
 
 jobs:
   ubuntu:
-    name: PHP images vulnerability scanner
+    name: Ubuntu images vulnerability scanner
     runs-on: "ubuntu-18.04"
     strategy:
       matrix:
@@ -35,7 +35,7 @@ jobs:
           sarif_file: 'trivy-results.sarif'
 
   alpine:
-    name: PHP images vulnerability scanner
+    name: Alpine images vulnerability scanner
     runs-on: "ubuntu-18.04"
     strategy:
       matrix:
