@@ -285,9 +285,23 @@ fi
 
 # Helper function to call `docker-compose` in the right context
 docker_compose () {
+    local command="$1"
+    shift
+    local command_options=()
+
+    # We must pass "-T" to docker-compose exec when piping input
+    if [ "$command" = "exec" ] && [ ! -t 0 ]; then
+        command_options+=(-T)
+    fi
+
+    # Set screen size
+    if [[ "$command" =~ exec|run ]]; then
+        command_options+=(-e COLUMNS=$(tput cols) -e LINES=$(tput lines))
+    fi
+
     # Note: Apparently, using --project-directory or --file options for `docker-compose` will break use of `$PWD` in
     # docker-compose.yml. Therefore, we `cd` before running `docker-compose` command.
-    (cd "$docker_compose_dir" && COMPOSE_DOMAIN=${COMPOSE_DOMAIN} docker-compose "$@")
+    (cd "$docker_compose_dir" && COMPOSE_DOMAIN=${COMPOSE_DOMAIN} docker-compose "$command" ${command_options[@]:+${command_options[@]}} "$@")
 }
 
 cmd="$1"
