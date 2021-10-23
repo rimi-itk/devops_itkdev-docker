@@ -1,4 +1,4 @@
-# itk-version: 1.0.0
+# itk-version: 1.0.1
 version: "3"
 
 networks:
@@ -85,9 +85,15 @@ services:
     image: mailhog/mailhog
     networks:
       - app
+      - frontend
     ports:
       - "1025"
       - "8025"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}Mailhog.rule=Host(`mailhog-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}Mailhog.loadbalancer.server.port=8025"
 
   drush:
     image: itkdev/drush6:latest

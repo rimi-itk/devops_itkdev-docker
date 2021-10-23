@@ -1,3 +1,4 @@
+# itk-version: 1.0.1
 version: "3"
 
 networks:
@@ -20,9 +21,6 @@ services:
       - MYSQL_PASSWORD=db
       - MYSQL_DATABASE=db
       #- ENCRYPT=1 # Uncomment to enable database encryption.
-    # @see https://symfony.com/doc/current/setup/symfony_server.html#docker-integration
-    labels:
-      com.symfony.server.service-prefix: 'DATABASE'
 
   phpfpm:
     image: itkdev/php7.4-fpm:latest
@@ -73,10 +71,12 @@ services:
     image: mailhog/mailhog
     networks:
       - app
+      - frontend
     ports:
       - "1025"
       - "8025"
-
-# Drush cache volume to persist cache between runs.
-volumes:
-  drush-cache:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=frontend"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME}Mailhog.rule=Host(`mailhog-${COMPOSE_DOMAIN}`)"
+      - "traefik.http.services.${COMPOSE_PROJECT_NAME}Mailhog.loadbalancer.server.port=8025"
