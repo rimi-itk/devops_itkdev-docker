@@ -43,16 +43,16 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-xsl \
     php${PHP_VERSION}-zip \
     php${PHP_VERSION}-dev \
-    php${PHP_VERSION}-xdebug \
+    #php${PHP_VERSION}-xdebug \
     php${PHP_VERSION}-intl \
     php${PHP_VERSION}-bcmath \
     php${PHP_VERSION}-sqlite3 \
-    php${PHP_VERSION}-amqp \
-    php${PHP_VERSION}-imagick \
-    php${PHP_VERSION}-memcached \
-    php${PHP_VERSION}-mongodb \
-    php${PHP_VERSION}-apcu \
-    php${PHP_VERSION}-redis \
+    #php${PHP_VERSION}-amqp \
+    #php${PHP_VERSION}-imagick \
+    #php${PHP_VERSION}-memcached \
+    #php${PHP_VERSION}-mongodb \
+    #php${PHP_VERSION}-apcu \
+    #php${PHP_VERSION}-redis \
     php-pear \
     libmcrypt-dev \
     libreadline-dev \
