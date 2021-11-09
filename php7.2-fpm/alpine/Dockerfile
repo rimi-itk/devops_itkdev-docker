@@ -33,6 +33,7 @@ RUN apk --update add --no-cache \
         icu-dev \
         openldap-dev \
         libmcrypt-dev \
+        mysql-client \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         gd \
