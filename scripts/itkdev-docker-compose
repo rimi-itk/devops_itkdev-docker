@@ -106,7 +106,7 @@ EOF
 }
 
 function enableNFS {
-  echo "Setting up nfs..."
+  echo "Setting up NFS..."
   U=`id -u`
   G=`id -g`
 
@@ -122,7 +122,7 @@ function enableNFS {
   echo "Restarting nfsd..."
   sudo nfsd restart
 
-  echo "You should now restarting docker to ensure NFS mounts works..."
+  echo "You should restart docker to ensure NFS mounts works..."
 }
 
 bold=$(tput bold)
@@ -147,7 +147,7 @@ Commands:
                 run the command.
 
   nfs:enable
-                Enabled support for NFS shares (preformance boots on macs)
+                Enable support for NFS shares (performance boost on Macs)
 
   sync
                 Sync both database and files.
@@ -221,7 +221,7 @@ Commands:
                 Stop and remove containers, networks, images, and volumes
 
   version
-                Display this tools current version
+                Display this tool's current version
 
   *
                 Pass command and arguments to `docker-compose` and
