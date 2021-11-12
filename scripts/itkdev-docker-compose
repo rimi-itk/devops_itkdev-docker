@@ -105,12 +105,12 @@ EOF
   fi
 }
 
-function enabledNFS {
+function enableNFS {
   echo "Setting up nfs..."
   U=`id -u`
   G=`id -g`
 
-  LINE="/Users -alldirs -mapall=$U:$G localhost"
+  LINE="/System/Volumes/Data/Users -alldirs -mapall=$U:$G localhost"
   FILE=/etc/exports
   sudo touch $FILE
   grep -qF -- "$LINE" "$FILE" || sudo echo "$LINE" | sudo tee -a $FILE > /dev/null
@@ -268,7 +268,7 @@ fi
 
 # Allow enabled NFS without existence of docker-compose.yml.
 if [[ "$1" == "nfs:enable" ]]; then
-  enabledNFS
+  enableNFS
   exit
 fi
 
