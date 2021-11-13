@@ -94,10 +94,10 @@ services:
 volumes:
   # Drush cache volume to persist cache between runs.
   drush-cache:
-  # Named volume requires that you have NFS shares enabled (performance boots on macs). The itkdev-docker-compose
-  # has an command to do this on macs. If you don't want to use it remove it from here and change the volume mapping
-  # to use normal shares in the containers.
-  # See https://sean-handley.medium.com/how-to-set-up-docker-for-mac-with-native-nfs-145151458adc
+  # Named volume requires that you have NFS shares enabled (performance boost on Macs).
+  # Use `itkdev-docker-compose nfs:enable` to enable NFS shares. If you don't want to use it remove it from here and
+  # change the volume mapping to use normal shares in the containers. See
+  # https://sean-handley.medium.com/how-to-set-up-docker-for-mac-with-native-nfs-145151458adc
   nfsApp:
     driver: local
     driver_opts:
