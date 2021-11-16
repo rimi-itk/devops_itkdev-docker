@@ -10,7 +10,7 @@ networks:
 
 services:
   mariadb:
-    image: ding2/ding2-mysql
+    image: ding2/ding2-mysql:master
     networks:
       - app
       - frontend
