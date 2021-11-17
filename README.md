@@ -23,8 +23,8 @@ docker preferences in the via the dock icon.
 From version 2.x this tool supports the usage of NFS mounted name-volumes, which
 gives faster file synchronisation during composer install and cache clear etc.
 
-It comes with a command `nfs:enable` that exports the users (yours) home directory
-through NFS to localhost, so docker can map directories into the containers. It also 
+It comes with a command `nfs:enable` that exports the Users directory through
+NFS to localhost, so docker can map directories into the containers. It also
 requires some changes to the docker-compose.yml files which have been updated
 to support NFS.
 
