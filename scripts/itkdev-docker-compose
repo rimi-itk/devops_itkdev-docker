@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+VERSION=2.0.0
 set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
 IFS=$'\n\t'
 
@@ -104,6 +105,26 @@ EOF
   fi
 }
 
+function enableNFS {
+  echo "Setting up NFS..."
+  U=`id -u`
+  G=`id -g`
+
+  LINE="/System/Volumes/Data/Users -alldirs -mapall=$U:$G localhost"
+  FILE=/etc/exports
+  sudo touch $FILE
+  grep -qF -- "$LINE" "$FILE" || sudo echo "$LINE" | sudo tee -a $FILE > /dev/null
+
+  LINE="nfs.server.mount.require_resv_port = 0"
+  FILE=/etc/nfs.conf
+  grep -qF -- "$LINE" "$FILE" || sudo echo "$LINE" | sudo tee -a $FILE > /dev/null
+
+  echo "Restarting nfsd..."
+  sudo nfsd restart
+
+  echo "You should restart docker to ensure NFS mounts works..."
+}
+
 bold=$(tput bold)
 normal=$(tput sgr0)
 
@@ -124,6 +145,9 @@ Commands:
                 the vendor/bin/drush command is run inside the phpfpm
                 container. Otherwise, the drush container is used to
                 run the command.
+
+  nfs:enable
+                Enable support for NFS shares (performance boost on Macs)
 
   sync
                 Sync both database and files.
@@ -196,6 +220,9 @@ Commands:
   down
                 Stop and remove containers, networks, images, and volumes
 
+  version
+                Display this tool's current version
+
   *
                 Pass command and arguments to `docker-compose` and
                 hope for the best.
@@ -236,6 +263,24 @@ EOF
 if [[ "$#" -gt "0" && "$1" == "template:install" ]]; then
   shift
   template_install "$@"
+  exit
+fi
+
+# Allow nfs:enable without existence of docker-compose.yml.
+if [[ "$#" -gt "0" && "$1" == "nfs:enable" ]]; then
+  enableNFS
+  exit
+fi
+
+# Allow version without existence of docker-compose.yml.
+if [[ "$#" -gt "0" && "$1" == "version" ]]; then
+  echo Version: ${VERSION}
+  exit
+fi
+
+# Allow help without existence of docker-compose.yml.
+if [[ "$#" -gt "0" && "$1" == "--help" ]]; then
+  usage
   exit
 fi
 
@@ -549,11 +594,6 @@ EOF
 
   shell)
     docker_compose exec "$@" /usr/bin/env sh
-    ;;
-
-  --help)
-    usage
-    exit
     ;;
 
   *)

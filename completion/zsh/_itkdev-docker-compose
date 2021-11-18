@@ -30,6 +30,7 @@ _itkdev-docker-compose() {
               'url[Print url to site.]' \
               'open[Open url in default browser.]' \
               'drush[Run drush command.]' \
+              'nfs\:enable[Enable NFS volume sharing.]' \
               'sync[Sync both database and files.]' \
               'sync\:db[Sync database base.]' \
               'sync\:files[Sync files base.]' \
@@ -49,6 +50,7 @@ _itkdev-docker-compose() {
               'hosts\:insert[Insert the docker site url into the hosts file.]' \
               'images\:pull[Update/pull all docker images.]' \
               'composer[Run composer command inside phpfpm container.]' \
+              'version[Display this tool'\''s current version.]' \
         && ret=0
 
       # 'bin'{bin/*,vendor/bin/*}'[Run command command inside phpfpm container]' \
