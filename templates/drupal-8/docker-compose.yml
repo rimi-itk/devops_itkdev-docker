@@ -39,7 +39,6 @@ services:
       - memcached
     volumes:
       - nfsApp:/app:delegated
-      - drush-cache:/root/.drush
 
   nginx:
     image: nginx:latest
