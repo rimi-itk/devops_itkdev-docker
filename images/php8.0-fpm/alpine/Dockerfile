@@ -44,7 +44,6 @@ RUN apk --update add --no-cache \
         ldap \
         pdo_mysql \
         mysqli \
-        memcached \
         opcache \
         pdo_mysql \
         sysvsem \

@@ -43,7 +43,6 @@ RUN apk --update add --no-cache \
         intl \
         ldap \
         pdo_mysql \
-        memcached \
         mysqli \
         opcache \
         pdo_mysql \

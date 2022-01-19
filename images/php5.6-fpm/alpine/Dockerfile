@@ -44,7 +44,6 @@ RUN apk --update add --no-cache \
         mcrypt \
         mysql \
         mysqli \
-        memcached \
         opcache \
         pdo_mysql \
         sysvsem \
@@ -53,8 +52,9 @@ RUN apk --update add --no-cache \
         zip
 
 RUN apk --update add --no-cache --virtual .build-deps autoconf g++ make zlib-dev libmemcached-dev cyrus-sasl-dev \
+    && pecl channel-update pecl.php.net \
     && pecl install redis-4.0.1 \
-    && pecl install memcached \
+    && pecl install memcached-2.2.0 \
     && docker-php-ext-enable redis memcached \
     && apk del .build-deps
 
