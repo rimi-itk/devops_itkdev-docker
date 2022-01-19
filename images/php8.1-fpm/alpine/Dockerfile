@@ -34,6 +34,8 @@ RUN apk --update add --no-cache \
         openldap-dev \
         libmcrypt-dev \
         mysql-client \
+        libmemcached-libs \
+        zlib \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         gd \
@@ -42,6 +44,7 @@ RUN apk --update add --no-cache \
         ldap \
         pdo_mysql \
         mysqli \
+        memcached \
         opcache \
         pdo_mysql \
         sysvsem \
@@ -49,9 +52,10 @@ RUN apk --update add --no-cache \
         xsl \
         zip
 
-RUN apk --update add --no-cache --virtual .build-deps autoconf g++ make \
+RUN apk --update add --no-cache --virtual .build-deps autoconf g++ make zlib-dev libmemcached-dev cyrus-sasl-dev \
     && pecl install redis \
-    && docker-php-ext-enable redis \
+    && pecl install memcached \
+    && docker-php-ext-enable redis memcached \
     && apk del .build-deps
 
 # Install composer (both composer version as set symlink to right version in entry-point)
