@@ -52,8 +52,9 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-amqp \
     php${PHP_VERSION}-imagick \
     php${PHP_VERSION}-mongodb \
+    php${PHP_VERSION}-mcrypt \
+    php${PHP_VERSION}-redis \
     php-pear \
-    libmcrypt-dev \
     libreadline-dev \
     mysql-client \
     unzip \
@@ -62,13 +63,6 @@ RUN DEBIAN_FRONTEND=noninteractive \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY etc/ /etc/
-
-# Configure php
-RUN pecl install mcrypt-1.0.2 \
-&& /usr/sbin/phpenmod mcrypt
-
-RUN yes '' | pecl install redis-4.3.0 \
-&& /usr/sbin/phpenmod redis
 
 # Install composer (both composer version as set symlink to right version in entry-point)
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1

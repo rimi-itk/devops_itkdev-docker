@@ -53,6 +53,7 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-amqp \
     php${PHP_VERSION}-imagick \
     php${PHP_VERSION}-mongodb \
+    php${PHP_VERSION}-mcrypt \
     php-pear \
     libmcrypt-dev \
     libreadline-dev \
