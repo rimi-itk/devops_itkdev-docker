@@ -56,6 +56,13 @@ brew install mysql-client
 __Note__: You have to follow the instructions brew writes to get it working (use
 `brew info mysql-client` to show the info).
 
+If you use the [Dory](https://github.com/FreedomBen/dory) revers proxy required to
+run DDF CMS unmodified you need to install dory. We only use dory for DPL/DDF shared
+projects (multi supplier projects).
+```sh
+brew install dory
+```
+
 ### Templates
 
 The [`templates`](templates/) directory contains templates for adding

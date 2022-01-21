@@ -134,6 +134,12 @@ Usage: itkdev-docker-compose command [command arguments]
 
 Commands:
 
+  dory:start
+                Start dory reverse proxy
+
+  dory:stop
+                Stop dory reverse proxy
+
   url [service [port]]
                 Print url to site or a service
 
@@ -326,9 +332,14 @@ if [ "$#" == "0" ]; then
   exit 1
 fi
 
-# Check if traefik is running and print warning if not
-if [ ! "$(docker inspect -f '{{.State.Running}}' traefik 2>/dev/null)" == "true" ]; then
-  (>&2 echo "${bold}Traefik reverse proxy has not been started. Hostname will not be resolved to containers and not all commands will work correctly.${normal}")
+# Check if revers proxy is running and print warning if not.
+set +o errexit
+is_treafik_running=$(docker inspect -f '{{.State.Running}}' traefik 2>/dev/null)
+is_dory_running=$(docker inspect -f '{{.State.Running}}' dory_dnsmasq 2>/dev/null)
+set -o errexit
+
+if [ ! "$is_treafik_running" == "true" ] && [ ! "$is_dory_running" == "true" ]; then
+  (>&2 echo "${bold}Reverse proxy has not been started. Hostname will not be resolved to containers and not all commands will work correctly.${normal}")
 fi
 
 # Helper function to call `docker-compose` in the right context
@@ -342,6 +353,18 @@ cmd="$1"
 shift
 
 case "$cmd" in
+  dory:start)
+    if [ "$(docker inspect -f '{{.State.Running}}' traefik 2>/dev/null)" == "true" ]; then
+      (>&2 echo "${bold}Traefik reverse proxy should be stopped first. Run itkdev-docker-compose traefik:stop.${normal}")
+      exit 22;
+    fi
+    dory up
+    ;;
+
+  dory:stop)
+    dory down
+    ;;
+
   url)
     domain=${COMPOSE_DOMAIN}
     if [ "$#" -gt 0 ]; then
@@ -450,6 +473,10 @@ EOF
     ;;
 
   traefik:start)
+    if [ "$(docker inspect -f '{{.State.Running}}' dory_dnsmasq 2>/dev/null)" == "true" ]; then
+      (>&2 echo "${bold}Dory reverse proxy should be stopped first. Run itkdev-docker-compose dory:stop.${normal}")
+      exit 22;
+    fi
     docker network inspect frontend >/dev/null 2>&1 || docker network create --driver=bridge --attachable --internal=false frontend
     $(cd ${script_dir}/../traefik/; docker-compose up -d)
     ;;
