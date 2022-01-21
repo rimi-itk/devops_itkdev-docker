@@ -27,6 +27,8 @@ _itkdev-docker-compose() {
   case $state in
     (command)
       _values 'itkdev-docker-compose command' \
+              'dory\:start[Start reverse proxy]' \
+              'dory\:stop[Stop reverse proxy]' \
               'url[Print url to site.]' \
               'open[Open url in default browser.]' \
               'drush[Run drush command.]' \
