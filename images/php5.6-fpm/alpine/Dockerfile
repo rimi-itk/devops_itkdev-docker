@@ -22,6 +22,9 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
     PHP_USER="deploy" \
     PHP_GROUP="deploy"
 
+# PHP5.6 base image is not update anymore, so try to fix stuff.
+RUN apk upgrade --no-cache
+
 RUN apk --update add --no-cache \
         libxslt-dev \
         libzip-dev \
@@ -82,6 +85,12 @@ COPY etc/php-fpm.d/fpm.ini /usr/local/etc/php-fpm.d/zz-fpm-docker.conf
 # Add deploy use to match server.
 RUN addgroup -g 1001 deploy \
 && adduser -G deploy -u 1001 -H deploy -D
+
+# Update lets-encrypt root certs.
+COPY etc/ca-certificates.conf /etc/ca-certificates.conf
+RUN mkdir /usr/share/ca-certificates/extra
+COPY certs/* /usr/share/ca-certificates/extra/
+RUN update-ca-certificates
 
 EXPOSE 9000
 
