@@ -1,4 +1,4 @@
-FROM mariadb:10.4
+FROM mariadb:10.5
 MAINTAINER ITK dev <itkdev@mkb.aarhus.dk>
 
 # Ensure packages are avaiable.
