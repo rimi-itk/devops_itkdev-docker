@@ -1,13 +1,23 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
 
-ENV PHP_VERSION 7.2
+ENV PHP_VERSION 7.4
 
+# Ensure packages are available.
 RUN apt-get update
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-    apt-utils
+RUN apt-get install -y language-pack-en-base \
+    software-properties-common \
+    apt-utils \
+&& locale-gen en_US.UTF-8 en_DK.UTF-8 en_GB.UTF-8
+
+# Add PHP repositories
+RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
+RUN apt-get update
+
+# Clean up
+RUN apt-get remove -y software-properties-common language-pack-en-base \
+&& apt-get autoremove -y
 
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get install -y \
@@ -34,8 +44,10 @@ RUN DEBIAN_FRONTEND=noninteractive \
     php${PHP_VERSION}-sqlite3 \
     php${PHP_VERSION}-apcu \
     php${PHP_VERSION}-memcached \
+    php${PHP_VERSION}-amqp \
     php${PHP_VERSION}-imagick \
     php${PHP_VERSION}-mongodb \
+    php${PHP_VERSION}-mcrypt \
     php-pear \
     libmcrypt-dev \
     libreadline-dev \
@@ -45,26 +57,20 @@ RUN DEBIAN_FRONTEND=noninteractive \
     imagemagick \
 && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir /var/run/php/
 COPY etc/ /etc/
 
-# Configure php
-RUN pecl install mcrypt-1.0.2 \
-&& /usr/sbin/phpenmod mcrypt
+# Ensure right PHP version is default
+RUN update-alternatives --set php /usr/bin/php${PHP_VERSION}
 
+# Configure PHP
 RUN yes '' | pecl install redis-4.3.0 \
 && /usr/sbin/phpenmod redis
-
-RUN sed -i '/memory_limit = 128M/c memory_limit = 256M' /etc/php/${PHP_VERSION}/fpm/php.ini \
-&& sed -i '/;date.timezone =/c date.timezone = Europe\/Copenhagen' /etc/php/${PHP_VERSION}/fpm/php.ini \
-&& sed -i '/upload_max_filesize = 2M/c upload_max_filesize = 16M' /etc/php/${PHP_VERSION}/fpm/php.ini \
-&& sed -i '/post_max_size = 8M/c post_max_size = 20M' /etc/php/${PHP_VERSION}/fpm/php.ini
 
 # Install composer (both composer version as set symlink to right version in entry-point)
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
 
-# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+# Set default composer version (can be overridden in entry-point via COMPOSER_VERSION env)
 RUN ln -fs /usr/bin/composer1 /usr/local/bin/composer
 
 # Add mhsendmail for mailhog

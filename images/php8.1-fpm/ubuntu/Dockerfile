@@ -3,26 +3,20 @@ LABEL maintainer "ITK Dev <itkdev@mkb.aarhus.dk>"
 
 ENV PHP_VERSION 8.1
 
-# Ensure packages are avaiable.
+# Ensure packages are available.
 RUN apt-get update
 
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y \
-    apt-utils \
-    iputils-ping
-
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get install -y language-pack-en-base \
+RUN apt-get install -y language-pack-en-base \
     software-properties-common \
-&& locale-gen en_US.UTF-8
+    apt-utils \
+&& locale-gen en_US.UTF-8 en_DK.UTF-8 en_GB.UTF-8
 
-# Add php repositories
-RUN DEBIAN_FRONTEND=noninteractive LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php \
-&& apt-get update
+# Add PHP repositories
+RUN LC_ALL=en_US.UTF-8 add-apt-repository ppa:ondrej/php
+RUN apt-get update
 
 # Clean up
-RUN DEBIAN_FRONTEND=noninteractive \
-    apt-get remove -y software-properties-common language-pack-en-base \
+RUN apt-get remove -y software-properties-common language-pack-en-base \
 && apt-get autoremove -y
 
 RUN DEBIAN_FRONTEND=noninteractive \
@@ -71,7 +65,7 @@ RUN update-alternatives --set php /usr/bin/php${PHP_VERSION}
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
 
-# Set default composer version (can be overriden in entry-point via COMPOSER_VERSION env)
+# Set default composer version (can be overridden in entry-point via COMPOSER_VERSION env)
 RUN ln -fs /usr/bin/composer1 /usr/local/bin/composer
 
 # Add mhsendmail for mailhog
