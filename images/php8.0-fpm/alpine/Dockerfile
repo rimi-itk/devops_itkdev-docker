@@ -36,6 +36,7 @@ RUN apk --update add --no-cache \
         mysql-client \
         libmemcached-libs \
         zlib \
+        patch \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         gd \
