@@ -7,7 +7,7 @@ networks:
     
 services:
   traefik:
-    image: traefik:v2.5
+    image: traefik:v2.6
     container_name: traefik
     restart: unless-stopped
     security_opt:
@@ -25,4 +25,5 @@ services:
       - $PWD/ssl:/certs:ro
     labels:
       - "traefik.enable=true"
+      - "traefik.log.level=DEBUG"
       - "traefik.http.routers.traefik.rule=Host(`traefik.local.itkdev.dk`)"
