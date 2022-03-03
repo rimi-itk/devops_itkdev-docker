@@ -25,4 +25,5 @@ services:
       - $PWD/ssl:/certs:ro
     labels:
       - "traefik.enable=true"
+      - "traefik.log.level=DEBUG"
       - "traefik.http.routers.traefik.rule=Host(`traefik.local.itkdev.dk`)"
