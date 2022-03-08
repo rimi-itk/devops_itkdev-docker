@@ -20,7 +20,8 @@ ENV PHP_OPCACHE_VALIDATE_TIMESTAMPS="1" \
     PHP_REQUEST_SLOWLOG_TIMEOUT="0" \
     PHP_SLOWLOG="/var/log/php-slow.log" \
     PHP_USER="deploy" \
-    PHP_GROUP="deploy"
+    PHP_GROUP="deploy" \
+    TZ=Europe/Copenhagen
 
 # PHP5.6 base image is not update anymore, so try to fix stuff.
 RUN apk upgrade --no-cache
@@ -39,6 +40,7 @@ RUN apk --update add --no-cache \
         libmemcached-libs \
         zlib \
         patch \
+        tzdata \
     && docker-php-ext-install -j$(nproc) \
         bcmath \
         gd \
