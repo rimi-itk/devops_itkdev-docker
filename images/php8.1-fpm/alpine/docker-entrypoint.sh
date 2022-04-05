@@ -17,6 +17,12 @@ else
   ln -fs /usr/bin/composer1 /usr/local/bin/composer
 fi
 
+## Add mailhog options to capture mails from PHP.
+if [ ! -z "${PHP_MAILHOG_ENABLE}" ]; then
+  echo "sendmail_path = '/usr/local/bin/mhsendmail --smtp-addr=\"${PHP_MAILHOG_SERVER}:${PHP_MAILHOG_PORT}\"'" >> ${PHP_INI_DIR}/../php-fpm.d/zz-fpm-docker.conf
+  echo "sendmail_path = '/usr/local/bin/mhsendmail --smtp-addr=\"${PHP_MAILHOG_SERVER}:${PHP_MAILHOG_PORT}\"'" >> ${PHP_INI_DIR}/conf.d/20-php.ini
+fi
+
 ## Start the php FPM process.
 echo "Starting PHP 8.1 FPM"
 /usr/local/bin/docker-php-entrypoint php-fpm

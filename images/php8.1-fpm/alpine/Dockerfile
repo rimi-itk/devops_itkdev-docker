@@ -75,11 +75,15 @@ RUN chmod +x /usr/local/bin/cachetool
 RUN mv ${PHP_INI_DIR}/php.ini-production ${PHP_INI_DIR}/php.ini
 
 # Copy custom PHP configuration.
-COPY etc/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/20-opcache.ini
-COPY etc/php/conf.d/php.ini /usr/local/etc/php/conf.d/20-php.ini
+COPY etc/php/conf.d/opcache.ini ${PHP_INI_DIR}/conf.d/20-opcache.ini
+COPY etc/php/conf.d/php.ini ${PHP_INI_DIR}/conf.d/20-php.ini
 
 # Custom FPM configuration.
-COPY etc/php-fpm.d/fpm.ini /usr/local/etc/php-fpm.d/zz-fpm-docker.conf
+COPY etc/php-fpm.d/fpm.ini ${PHP_INI_DIR}/../php-fpm.d/zz-fpm-docker.conf
+
+# Add mhsendmail for mailhog
+ADD https://github.com/mailhog/mhsendmail/releases/download/v0.2.0/mhsendmail_linux_amd64 /usr/local/bin/mhsendmail
+RUN chmod +x /usr/local/bin/mhsendmail
 
 # Add deploy use to match server.
 RUN addgroup -g 1001 deploy \
