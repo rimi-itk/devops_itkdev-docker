@@ -3,7 +3,7 @@ MAINTAINER ITK dev <itkdev@mkb.aarhus.dk>
 
 ENV DRUSH_VERSION 6.7.0
 
-# Ensure packages are avaiable.
+# Ensure packages are available.
 RUN apt-get update
 
 RUN DEBIAN_FRONTEND=noninteractive \
