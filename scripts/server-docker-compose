@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -o errexit -o errtrace -o noclobber -o nounset -o pipefail
+IFS=$'\n\t'
+
+bold=$(tput bold)
+normal=$(tput sgr0)
+
+# @see https://github.com/itk-dev/devops_itkdev-docker/blob/develop/scripts/itkdev-docker-compose
+
+# @see https://unix.stackexchange.com/questions/13464/is-there-a-way-to-find-a-file-in-an-inverse-recursive-search/13474
+upsearch () {
+  slashes=${PWD//[^\/]/}
+  directory="$PWD"
+  for (( n=${#slashes}; n>0; --n ))
+  do
+    test -e "$directory/$1" && echo "$directory/$1" && return
+    directory="$directory/.."
+  done
+}
+
+docker_compose_file=$(upsearch 'docker-compose.yml')
+if [ -z "$docker_compose_file" ]; then
+  (>&2 echo "${bold}Cannot find docker-compose.yml file${normal}")
+  exit 1
+fi
+
+docker_compose_dir=$(cd "$(dirname "$docker_compose_file")" && pwd)
+env_file="$docker_compose_dir/.env.docker.local"
+
+if [ ! -f "$env_file" ]; then
+  (>&2 echo "${bold}$env_file not found${normal}")
+  exit 1
+fi
+
+# shellcheck disable=SC1090
+source "$env_file"
+
+# Helper function to call `docker-compose` in the right context
+docker_compose () {
+  compose_file_list="${COMPOSE_FILE_LIST:-docker-compose.server.yml}"
+
+  # Split COMPOSE_FILE_LIST by space
+  # @see https://www.golinuxcloud.com/bash-split-string-into-array-linux/#Method_3_Bash_split_string_into_array_using_delimiter
+  # shellcheck disable=SC2162
+  IFS=" " read -a compose_file_array <<< "$compose_file_list"
+
+  declare -a compose_file_options=()
+  for compose_file in "${compose_file_array[@]}"; do
+    compose_file_options+=("--file $compose_file")
+  done
+
+  # @see https://www.thegeekstuff.com/2010/06/bash-array-tutorial/
+  declare -a compose_args=("$@")
+
+  if [ "exec" == "${1:-}" ]; then
+    # Run `exec` as deploy user.
+    # @see https://docs.itkdev.dk/docs/server/docker/README#running-composer-and-other-tools
+    compose_args=("$1" "--user deploy" "${@:2}")
+  fi
+
+  # Note: Apparently, using --project-directory or --file options for
+  # `docker-compose` will break use of `$PWD` in docker-compose.yml.
+  # Therefore, we `cd` before running the `docker-compose` command.
+
+  if [ "${#compose_args[@]}" -lt 1 ]; then
+    # shellcheck disable=SC2294
+    (cd "$docker_compose_dir" && eval docker-compose --env-file .env.docker.local "${compose_file_options[@]}")
+  else
+    # shellcheck disable=SC2294
+    (cd "$docker_compose_dir" && eval docker-compose --env-file .env.docker.local "${compose_file_options[@]}" "${compose_args[@]}")
+  fi
+}
+
+docker_compose "$@"
